@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/10/26 15:51:47 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/11/01 20:15:51 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILOSOPHERS_H
 
 # include <string.h>
+# include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/time.h>
@@ -28,6 +29,7 @@ typedef struct	s_data
 	size_t	eat_time;
 	size_t	zzz_time;
 	size_t	n_meals;
+	size_t	time;
 	pthread_t	*philo;
 	//pthread_mutex_t
 }				t_data;
@@ -53,6 +55,6 @@ int		ft_isdigit(int c);
 int		ft_atoi(const char *str);
 
 // philosophers
-void	philosopher(char *arg[]);
+int	philosopher(char *arg[]);
 
 #endif
