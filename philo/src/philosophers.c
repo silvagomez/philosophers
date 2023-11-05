@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/11/02 12:46:58 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/11/05 20:09:33 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,21 @@ int	philosopher(char *arg[])
 		data.n_meals = ft_atoi(arg[5]);
 	else
 		data.n_meals = 0;
+	
 	// create thread 
 	size_t idx;
 	idx = 1;
 	data.philo = (pthread_t *)malloc(data.n_philos * sizeof(pthread_t));
+	if (!data.philo)
+		return (error_terminate(ERR_MTH));
+	// create mutex for fork
+	data.fork = (pthread_mutex_t *)malloc(data.n_philos * sizeof(pthread_mutex_t));
+	if (!data.fork)
+		return (error_terminate(ERR_MMT));
+	// thread routine
+	while (idx <= data.n_philos)
+		pthread_mutex_init(&data.fork[i++]);
+	idx = 1;
 	while (idx <= data.n_philos)
 	{
 		if (pthread_create(&data.philo[idx], NULL, routine, NULL) != 0)
@@ -66,7 +77,9 @@ int	philosopher(char *arg[])
 		printf("Philo %zu thread has started\n", idx);
 		idx++;
 	}
+	
 	// Need a pthread_t for guardian
+	
 	// create join 
 	idx = 1;
 	while (idx <= data.n_philos)
@@ -76,7 +89,12 @@ int	philosopher(char *arg[])
 		printf("Philo %zu thread has finished\n", idx);
 		idx++;
 	}
+	// destroy fork mutex
+	idx = 1;
+	while (idx <= data.n_philos)
+		pthread_mutex_destroy(&data.fork[i++]);
 	printf("Total mails %d\n", mails);
+	
 	/* 
 	 * A pthread_join will used for the guardian
 	 */

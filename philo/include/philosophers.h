@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/11/01 20:15:51 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/11/02 11:05:03 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@
 
 typedef struct	s_data
 {
-	size_t	n_philos;
-	size_t	life_time;
-	size_t	eat_time;
-	size_t	zzz_time;
-	size_t	n_meals;
-	size_t	time;
-	pthread_t	*philo;
+	size_t			n_philos;
+	size_t			life_time;
+	size_t			eat_time;
+	size_t			zzz_time;
+	size_t			n_meals;
+	size_t			time;
+	pthread_t		*philo;
+	pthread_mutex_t	*fork;
 	//pthread_mutex_t
 }				t_data;
 
