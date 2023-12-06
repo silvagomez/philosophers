@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/11/02 11:05:03 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/06 21:13:37 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,27 +22,33 @@
 
 # include "error.h"
 
-typedef struct	s_data
-{
-	size_t			n_philos;
-	size_t			life_time;
-	size_t			eat_time;
-	size_t			zzz_time;
-	size_t			n_meals;
-	size_t			time;
-	pthread_t		*philo;
-	pthread_mutex_t	*fork;
-	//pthread_mutex_t
-}				t_data;
+typedef struct	s_table t_table;
 
-// fork?
 typedef struct	s_philo
 {
-	size_t		philo_id;
-	size_t		l_hand;
-	size_t		r_hand;	
-	t_data		*data;
+	size_t			id;
+	size_t			l_hand;
+	size_t			r_hand;
+	int				meals;
+	struct s_philo	*next;
+	struct s_philo	*prev;
+	struct s_philo	*beside;
+	t_table		*table;
 }				t_philo;
+
+typedef struct	s_table
+{
+	size_t			n_philos;
+	size_t			die_time;
+	size_t			eat_time;
+	size_t			zzz_time;
+	int				meals;
+	long			time;
+	pthread_t		*th;
+	pthread_mutex_t	*fork;
+	t_philo			*philo;
+	//pthread_mutex_t
+}				t_table;
 
 // error
 int		error_terminate(char *s);
