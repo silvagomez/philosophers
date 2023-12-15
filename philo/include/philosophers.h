@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/06 21:13:37 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/15 10:20:29 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct	s_philo
 typedef struct	s_table
 {
 	size_t			n_philos;
-	size_t			die_time;
+	size_t			life_time;
 	size_t			eat_time;
 	size_t			zzz_time;
 	int				meals;
