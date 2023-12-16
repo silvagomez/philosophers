@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 13:04:12 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/16 16:11:01 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_table
 	pthread_t		*th;
 	pthread_t		waiter;
 	pthread_mutex_t	*fork;
+	pthread_mutex_t	mutest;
 	t_philo			*philo;
 }				t_table;
 

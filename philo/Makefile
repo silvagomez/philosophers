@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/10/25 00:01:33 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/16 15:05:56 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,9 @@ NAME_BONUS		:=	philo_bonus
 #------------------------------------------------------------------------------#
 
 CC				:=	cc
-#CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=address -g3
-CFLAGS			:=	-Wall -Wextra -Werror -g
+#CFLAGS			:=	-Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=thread -g3
+#CFLAGS			:=	-Wall -Wextra -Werror -g
 
 INCLUDE_PATH	:=	include/
 INCLUDE			:=	$(INCLUDE_PATH)philosophers.h

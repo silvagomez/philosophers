@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 13:03:13 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/16 17:23:01 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,26 @@ void	*routine(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
+	/*
 	if (philo->id % 2 != 0)
 		usleep(10);
-	printf("pointer %lu\n", philo->id);
-	printf("time philo_id has taken a fork\n");
+		*/
+	printf("philo id %lu\n", philo->id);
+	//assign philo seat
+	printf("time philo %lu can use the fork %lu\n", philo->id, philo->l_hand);
+	//waiter start
+	printf("time philo %lu can use the fork %lu\n", philo->id, philo->r_hand);
+	/*
+	if (philo->id % 2 = 0)
+		ft_
+		*/
 	printf("time philo_id is eating\n");
 	printf("time philo_id is sleeping\n");
 	printf("time philo_id is thinking\n");
 	printf("time philo_id died\n");
+	pthread_mutex_lock(&philo->table->mutest);
 	mails++;
+	pthread_mutex_unlock(&philo->table->mutest);
 	return (NULL);
 }
 
@@ -164,11 +175,24 @@ int	set_philo(t_table *table, t_philo **philo)
 	if (!philo)
 		return (error_terminate("Error malloc philo matrix"));
 	idx = 0;
+	printf("---INIT PHILO----\n");
 	while (idx < table->n_philos)
 	{
+		printf("philo id %lu + 1 = %lu\n", idx, idx+1);
+		/*
 		(*philo)->id = idx + 1;
 		(*philo)->meals = table->meals;
 		(*philo)->table = table;
+		*/
+		(*philo)[idx].id = idx + 1;
+		(*philo)[idx].meals = table->meals;
+		(*philo)[idx].table = table;
+		(*philo)[idx].l_hand = (*philo)[idx].id;
+		if ((*philo)[idx].id != (*philo)[idx].table->n_philos)
+			(*philo)[idx].r_hand = (*philo)[idx].id + 1;
+		else
+			(*philo)[idx].r_hand = 1;
+		printf(BLU"%p philo data: id=%lu, meals=%i, pointer table=%p\n"RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meals, (*philo)[idx].table);
 		idx++;
 	}
 	return (0);
@@ -187,28 +211,31 @@ int	philosopher(char *arg[])
 	printf("table.meals %i\n", table.meals);
 	printf("table.time %lu\n", table.time);
 	printf("table.philo %p\n", table.philo);
+	printf("table %p\n", &table);
 
 	t_philo	*philo;
 	if (set_philo(&table, &philo) < 0)
 		return (-1);
 
 	size_t	idx;
-	/*
+	
 	idx = 0;
 	while(idx < table.n_philos)
 	{
 		printf("philo id %lu meals %i\n", philo[idx].id, philo[idx].meals);
+		printf("philo pointer  %p and pointer table %p\n", &philo[idx], philo[idx].table);
 		idx++;
 	}
-*/
+
 	idx = 0;
 	// thread routine
 	while (idx < table.n_philos)
 		pthread_mutex_init(&table.fork[idx++], NULL);
+	pthread_mutex_init(&table.mutest, NULL);
 	idx = 0;
 	while (idx < table.n_philos)
 	{
-		if (pthread_create(&table.th[idx], NULL, routine, philo) != 0)
+		if (pthread_create(&table.th[idx], NULL, routine, &philo[idx]) != 0)
 			return (error_terminate(ERR_CTH));
 		printf(HGRN"Philo %zu thread has started\n"RST, idx + 1);
 		idx++;
@@ -229,6 +256,7 @@ int	philosopher(char *arg[])
 	idx = 0;
 	while (idx <= table.n_philos)
 		pthread_mutex_destroy(&table.fork[idx++]);
+	pthread_mutex_destroy(&table.mutest);
 	printf("Total mails %d\n", mails);
 	
 
