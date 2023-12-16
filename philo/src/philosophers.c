@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/06 21:15:45 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/07 12:47:35 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,28 @@
 
 int mails = 0;
 
-size_t	get_time(void)
+int	get_time(void)
 {
 	struct timeval	s_time;
+	
 	gettimeofday(&s_time, NULL);
 	return ((s_time.tv_sec * 1000) + (s_time.tv_usec / 1000));
 }
 
 /*
  * Philosophers routine
- *	- eat
- *	- sleep
- *	- think
+ * - eat
+ * - sleep
+ * - think
  */
-void	*routine(void *d)
+void	*routine(void *ptr)
 {
-	// test 
+	t_philo	*philo;
 
-	(void)d;
+	philo = (t_philo *)ptr;
+	if (philo->id % 2 != 0)
+		usleep(10);
+	printf("pointer %lu\n", philo->id);
 	printf("time philo_id has taken a fork\n");
 	printf("time philo_id is eating\n");
 	printf("time philo_id is sleeping\n");
@@ -41,6 +45,9 @@ void	*routine(void *d)
 	return (NULL);
 }
 
+/*
+ * Returns the last node of philo list.
+ */
 t_philo	*philo_last(t_philo *philo)
 {
 	if (!philo)
@@ -50,6 +57,9 @@ t_philo	*philo_last(t_philo *philo)
 	return (philo);
 }
 
+/*
+ * Creates a new philo node.
+ */
 t_philo	*philo_new(t_table *table, size_t id)
 {
 	t_philo	*node;
@@ -66,6 +76,10 @@ t_philo	*philo_new(t_table *table, size_t id)
 	return (node);
 }
 
+
+/*
+ * Adds a new philo node to the list, and set the sit order.
+ */
 void	philo_add(t_table *table, t_philo *new)
 {
 	if (!new)
@@ -75,17 +89,15 @@ void	philo_add(t_table *table, t_philo *new)
 		philo_last(table->philo)->next = new;
 		philo_last(table->philo)->beside = new;
 		if (philo_last(table->philo)->id == table->n_philos)
-		{
-			printf("OK\n");
 			philo_last(table->philo)->beside = table->philo;
-		}
 	}
 	else
 		table->philo = new;
-		
 }
 
-// create a t_philo.
+/*
+ * Creates the philo list.
+ */
 void	init_philo(t_table *table)
 {
 	size_t	idx;
@@ -95,8 +107,10 @@ void	init_philo(t_table *table)
 		philo_add(table, philo_new(table, idx));
 }
 
-// create mutex for fork
-int	init_fork(t_table *table)
+/*
+ * Allocates the matrix of mutex per philo fork.
+ */
+int	alloc_fork(t_table *table)
 {
 	table->fork = (pthread_mutex_t *)malloc(table->n_philos * \
 			sizeof(pthread_mutex_t));
@@ -106,8 +120,10 @@ int	init_fork(t_table *table)
 }
 
 
-// init thread 
-int	init_thread(t_table *table)
+/*
+ * Allocates the matrix of threads per philo.
+ */
+int	alloc_thread(t_table *table)
 {
 	table->th = (pthread_t *)malloc(table->n_philos * sizeof(pthread_t));
 	if (!table->th)
@@ -116,7 +132,7 @@ int	init_thread(t_table *table)
 }
 
 /*
- * This functions Initializes varriables of the table.
+ * This functions initializes varriables of the table.
  */
 int	set_table(t_table *table, char *arg[])
 {
@@ -129,12 +145,32 @@ int	set_table(t_table *table, char *arg[])
 		table->meals = ft_atoi(arg[5]);
 	else
 		table->meals = -1;
-	if (init_thread(table) < 0)
+	if (alloc_thread(table) < 0)
 		return (-1);
-	if (init_fork(table) < 0)
+	if (alloc_fork(table) < 0)
 		return (-1);
+	/*
 	table->philo = NULL;
 	init_philo(table);
+	*/
+	return (0);
+}
+
+int	set_philo(t_table *table, t_philo **philo)
+{
+	size_t	idx;
+
+	*philo = (t_philo *)malloc(table->n_philos * sizeof(pthread_t));
+	if (!philo)
+		return (error_terminate("Error malloc philo matrix"));
+	idx = 0;
+	while (idx < table->n_philos)
+	{
+		(*philo)->id = idx + 1;
+		(*philo)->meals = table->meals;
+		(*philo)->table = table;
+		idx++;
+	}
 	return (0);
 }
 
@@ -144,7 +180,6 @@ int	philosopher(char *arg[])
 
 	if (set_table(&table, arg) < 0)
 		return (-1);
-	printf("CREADO\n");
 	printf("table.n_philos %lu\n", table.n_philos);
 	printf("table.die_time %lu\n", table.die_time);
 	printf("table.eat_time %lu\n", table.eat_time);
@@ -152,13 +187,20 @@ int	philosopher(char *arg[])
 	printf("table.meals %i\n", table.meals);
 	printf("table.time %lu\n", table.time);
 	printf("table.philo %p\n", table.philo);
-	while(table.philo)
-	{
-		printf("philo id %lu meals %i\n", table.philo->id, table.philo->meals);
-		table.philo = table.philo->next;
-	}
+
+	t_philo	*philo;
+	if (set_philo(&table, &philo) < 0)
+		return (-1);
 
 	size_t	idx;
+	/*
+	idx = 0;
+	while(idx < table.n_philos)
+	{
+		printf("philo id %lu meals %i\n", philo[idx].id, philo[idx].meals);
+		idx++;
+	}
+*/
 	idx = 0;
 	// thread routine
 	while (idx < table.n_philos)
@@ -166,9 +208,9 @@ int	philosopher(char *arg[])
 	idx = 0;
 	while (idx < table.n_philos)
 	{
-		if (pthread_create(&table.th[idx], NULL, routine, NULL) != 0)
+		if (pthread_create(&table.th[idx], NULL, routine, philo) != 0)
 			return (error_terminate(ERR_CTH));
-		printf("Philo %zu thread has started\n", idx);
+		printf(HGRN"Philo %zu thread has started\n"RST, idx + 1);
 		idx++;
 	}
 	
@@ -180,7 +222,7 @@ int	philosopher(char *arg[])
 	{
 		if (pthread_join(table.th[idx], NULL) != 0)
 			return (error_terminate(ERR_JTH));
-		printf("Philo %zu thread has finished\n", idx);
+		printf(HCYN"Philo %zu thread has finished\n"RST, idx + 1);
 		idx++;
 	}
 	// destroy fork mutex
