@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/07 12:47:35 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/16 13:03:13 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ int	alloc_thread(t_table *table)
 int	set_table(t_table *table, char *arg[])
 {
 	table->n_philos = ft_atoi(arg[1]);
-	table->die_time = ft_atoi(arg[2]);
+	table->life_time = ft_atoi(arg[2]);
 	table->eat_time = ft_atoi(arg[3]);
 	table->zzz_time = ft_atoi(arg[4]);
 	table->time = get_time();
@@ -181,7 +181,7 @@ int	philosopher(char *arg[])
 	if (set_table(&table, arg) < 0)
 		return (-1);
 	printf("table.n_philos %lu\n", table.n_philos);
-	printf("table.die_time %lu\n", table.die_time);
+	printf("table.life_time %lu\n", table.life_time);
 	printf("table.eat_time %lu\n", table.eat_time);
 	printf("table.zzz_time %lu\n", table.zzz_time);
 	printf("table.meals %i\n", table.meals);
