@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 11:37:24 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/15 10:20:29 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,18 @@
 
 typedef struct	s_table t_table;
 
+typedef struct	s_philo
+{
+	size_t			id;
+	size_t			l_hand;
+	size_t			r_hand;
+	int				meals;
+	struct s_philo	*next;
+	struct s_philo	*prev;
+	struct s_philo	*beside;
+	t_table		*table;
+}				t_philo;
+
 typedef struct	s_table
 {
 	size_t			n_philos;
@@ -34,19 +46,9 @@ typedef struct	s_table
 	long			time;
 	pthread_t		*th;
 	pthread_mutex_t	*fork;
+	t_philo			*philo;
+	//pthread_mutex_t
 }				t_table;
-
-typedef struct	s_philo
-{
-	size_t			id;
-	size_t			l_hand;
-	size_t			r_hand;
-	int				meals;
-	struct s_philo	*next;
-	struct s_philo	*prev;
-	struct s_philo	*beside;
-	t_table			*table;
-}				t_philo;
 
 // error
 int		error_terminate(char *s);

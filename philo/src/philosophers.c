@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 12:07:12 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/15 10:20:33 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ t_philo	*philo_last(t_philo *philo)
 	return (philo);
 }
 
-t_philo	*philo_new(t_philo **philo, size_t id, t_table *table)
+t_philo	*philo_new(t_table *table, size_t id)
 {
 	t_philo	*node;
 
@@ -59,44 +59,44 @@ t_philo	*philo_new(t_philo **philo, size_t id, t_table *table)
 		return (NULL);
 	node->id = id;
 	node->meals = table->meals;
-	node->prev = philo_last(*philo);
+	node->prev = philo_last(table->philo);
 	node->next = NULL;
 	node->beside = NULL;
 	node->table = table;
 	return (node);
 }
 
-void	philo_add(t_philo **philo, t_philo *new, t_table *table)
+void	philo_add(t_table *table, t_philo *new)
 {
 	if (!new)
 		return ;
-	if (*philo != NULL)
+	if (table->philo != NULL)
 	{
-		philo_last(*philo)->next = new;
-		philo_last(*philo)->beside = new;
-		if (philo_last(*philo)->id == table->n_philos)
+		philo_last(table->philo)->next = new;
+		philo_last(table->philo)->beside = new;
+		if (philo_last(table->philo)->id == table->n_philos)
 		{
-			printf("OK last\n");
-			philo_last(*philo)->beside = *philo;
+			printf("OK\n");
+			philo_last(table->philo)->beside = table->philo;
 		}
 	}
 	else
-		*philo = new;
+		table->philo = new;
 		
 }
 
 // create a t_philo.
-void	set_philo(t_table *table, t_philo **philo)
+void	init_philo(t_table *table)
 {
 	size_t	idx;
 
 	idx = 0;
 	while (++idx <= table->n_philos)
-		philo_add(*philo, philo_new(*philo, idx, table), table);
+		philo_add(table, philo_new(table, idx));
 }
 
 // create mutex for fork
-int	allocate_fork(t_table *table)
+int	init_fork(t_table *table)
 {
 	table->fork = (pthread_mutex_t *)malloc(table->n_philos * \
 			sizeof(pthread_mutex_t));
@@ -107,7 +107,7 @@ int	allocate_fork(t_table *table)
 
 
 // init thread 
-int	allocate_thread(t_table *table)
+int	init_thread(t_table *table)
 {
 	table->th = (pthread_t *)malloc(table->n_philos * sizeof(pthread_t));
 	if (!table->th)
@@ -129,10 +129,12 @@ int	set_table(t_table *table, char *arg[])
 		table->meals = ft_atoi(arg[5]);
 	else
 		table->meals = -1;
-	if (allocate_thread(table) < 0)
+	if (init_thread(table) < 0)
 		return (-1);
-	if (allocate_fork(table) < 0)
+	if (init_fork(table) < 0)
 		return (-1);
+	table->philo = NULL;
+	init_philo(table);
 	return (0);
 }
 
@@ -149,14 +151,11 @@ int	philosopher(char *arg[])
 	printf("table.zzz_time %lu\n", table.zzz_time);
 	printf("table.meals %i\n", table.meals);
 	printf("table.time %lu\n", table.time);
-	printf("table %p\n", table);
-	t_philo	*philo;
-	philo = NULL;
-	set_philo(&table, &philo);
-	while(philo)
+	printf("table.philo %p\n", table.philo);
+	while(table.philo)
 	{
-		printf("philo id %lu meals %i pointer table %p\n", philo->id, philo->meals philo->table);
-		philo = philo->next;
+		printf("philo id %lu meals %i\n", table.philo->id, table.philo->meals);
+		table.philo = table.philo->next;
 	}
 
 	size_t	idx;
