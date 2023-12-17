@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 17:23:01 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 11:33:40 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ void	*routine(void *ptr)
 		*/
 	printf("philo id %lu\n", philo->id);
 	//assign philo seat
-	printf("time philo %lu can use the fork %lu\n", philo->id, philo->l_hand);
+	printf("time philo %lu can use the fork %lu\n", philo->id, philo->id_lhand);
 	//waiter start
-	printf("time philo %lu can use the fork %lu\n", philo->id, philo->r_hand);
+	printf("time philo %lu can use the fork %lu\n", philo->id, philo->id_rhand);
 	/*
 	if (philo->id % 2 = 0)
 		ft_
@@ -59,6 +59,7 @@ void	*routine(void *ptr)
 /*
  * Returns the last node of philo list.
  */
+/*
 t_philo	*philo_last(t_philo *philo)
 {
 	if (!philo)
@@ -67,10 +68,12 @@ t_philo	*philo_last(t_philo *philo)
 		philo = philo->next;
 	return (philo);
 }
+*/
 
 /*
  * Creates a new philo node.
  */
+/*
 t_philo	*philo_new(t_table *table, size_t id)
 {
 	t_philo	*node;
@@ -86,11 +89,12 @@ t_philo	*philo_new(t_table *table, size_t id)
 	node->table = table;
 	return (node);
 }
-
+*/
 
 /*
  * Adds a new philo node to the list, and set the sit order.
  */
+/*
 void	philo_add(t_table *table, t_philo *new)
 {
 	if (!new)
@@ -105,10 +109,12 @@ void	philo_add(t_table *table, t_philo *new)
 	else
 		table->philo = new;
 }
+*/
 
 /*
  * Creates the philo list.
  */
+/*
 void	init_philo(t_table *table)
 {
 	size_t	idx;
@@ -117,6 +123,7 @@ void	init_philo(t_table *table)
 	while (++idx <= table->n_philos)
 		philo_add(table, philo_new(table, idx));
 }
+*/
 
 /*
  * Allocates the matrix of mutex per philo fork.
@@ -160,6 +167,10 @@ int	set_table(t_table *table, char *arg[])
 		return (-1);
 	if (alloc_fork(table) < 0)
 		return (-1);
+	printf("-----TEST ADDRESS FORK-----\n");
+	size_t idx = 0;
+	while (idx++ < table->n_philos)
+		printf("pointer address of fork %lu is %p\n", idx + 1, &table->fork[idx]);
 	/*
 	table->philo = NULL;
 	init_philo(table);
@@ -179,20 +190,23 @@ int	set_philo(t_table *table, t_philo **philo)
 	while (idx < table->n_philos)
 	{
 		printf("philo id %lu + 1 = %lu\n", idx, idx+1);
-		/*
-		(*philo)->id = idx + 1;
-		(*philo)->meals = table->meals;
-		(*philo)->table = table;
-		*/
 		(*philo)[idx].id = idx + 1;
 		(*philo)[idx].meals = table->meals;
 		(*philo)[idx].table = table;
-		(*philo)[idx].l_hand = (*philo)[idx].id;
+		(*philo)[idx].id_lhand = (*philo)[idx].id;
 		if ((*philo)[idx].id != (*philo)[idx].table->n_philos)
-			(*philo)[idx].r_hand = (*philo)[idx].id + 1;
+		{
+			(*philo)[idx].id_lhand = (*philo)[idx].id + 1;
+			(*philo)[idx].l_hand = table->fork[idx];
+		}
 		else
-			(*philo)[idx].r_hand = 1;
-		printf(BLU"%p philo data: id=%lu, meals=%i, pointer table=%p\n"RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meals, (*philo)[idx].table);
+		{
+			(*philo)[idx].id_rhand = 1;
+			(*philo)[idx].r_hand = table->fork[0];
+		}
+		printf(BLU"%p philo data: id=%lu ## meals=%i ## pointer table=%p ## ", &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meals, (*philo)[idx].table);
+		printf("left fork id=%lu ## left fork mutex pointer %p ## ", (*philo)[idx].id_lhand, (*philo)[idx].l_hand);
+		printf("right fork id=%lu ## right fork mutex pointer %p ##\n)"RST, (*philo)[idx].id_rhand, (*philo)[idx].r_hand);
 		idx++;
 	}
 	return (0);

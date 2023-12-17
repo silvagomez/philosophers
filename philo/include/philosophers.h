@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/16 16:11:01 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 11:07:42 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,30 @@
 
 typedef struct s_table	t_table;
 
+/*
 typedef struct s_philo
 {
 	size_t			id;
 	size_t			l_hand;
 	size_t			r_hand;
+	pthread_mutex_t	l_hand;
+	pthread_mutex_t	r_hand;
 	int				meals;
 	struct s_philo	*next;
 	struct s_philo	*prev;
 	struct s_philo	*beside;
+	t_table			*table;
+}				t_philo;
+*/
+
+typedef struct s_philo
+{
+	size_t			id;
+	size_t			id_lhand;
+	size_t			id_rhand;
+	pthread_mutex_t	l_hand;
+	pthread_mutex_t	r_hand;
+	int				meals;
 	t_table			*table;
 }				t_philo;
 
