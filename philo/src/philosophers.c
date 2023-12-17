@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 12:21:24 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 13:44:02 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ int	set_table(t_table *table, char *arg[])
 		return (-1);
 	if (alloc_fork(table) < 0)
 		return (-1);
-	printf("-----TEST ADDRESS FORK-----\n");
+	printf("-----TEST ADDRESS FORK----------------------------------------\n");
 	size_t idx = 0;
 	while (idx < table->n_philos)
 	{
@@ -189,7 +189,7 @@ int	set_philo(t_table *table, t_philo **philo)
 	if (!(*philo))
 		return (error_terminate("Error malloc philo matrix"));
 	idx = 0;
-	printf("---INIT PHILO----\n");
+	printf("---INIT PHILO-------------------------------------------------\n");
 	while (idx < table->n_philos)
 	{
 		printf("philo id %lu + 1 = %lu\n", idx, idx+1);
@@ -223,6 +223,7 @@ int	philosopher(char *arg[])
 
 	if (set_table(&table, arg) < 0)
 		return (-1);
+	printf("---TABLE DATA-------------------------------------------------\n");
 	printf("table.n_philos %lu\n", table.n_philos);
 	printf("table.life_time %lu\n", table.life_time);
 	printf("table.eat_time %lu\n", table.eat_time);
@@ -236,8 +237,8 @@ int	philosopher(char *arg[])
 	if (set_philo(&table, &philo) < 0)
 		return (-1);
 
+	printf("---PHILOS-----------------------------------------------------\n");
 	size_t	idx;
-	
 	idx = 0;
 	while(idx < table.n_philos)
 	{
@@ -246,6 +247,8 @@ int	philosopher(char *arg[])
 		idx++;
 	}
 
+	// Need a pthread_t for guardian
+	printf("---THREADS PHILOS---------------------------------------------\n");
 	idx = 0;
 	// thread routine
 	while (idx < table.n_philos)
@@ -260,7 +263,6 @@ int	philosopher(char *arg[])
 		idx++;
 	}
 	
-	// Need a pthread_t for guardian
 	
 	// create join 
 	idx = 0;
@@ -273,7 +275,7 @@ int	philosopher(char *arg[])
 	}
 	// destroy fork mutex
 	idx = 0;
-	while (idx <= table.n_philos)
+	while (idx < table.n_philos)
 		pthread_mutex_destroy(&table.fork[idx++]);
 	pthread_mutex_destroy(&table.mutest);
 	printf("Total mails %d\n", mails);
