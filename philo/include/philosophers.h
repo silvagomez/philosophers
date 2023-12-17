@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 11:07:42 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:09:56 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ typedef struct s_philo
 	size_t			id;
 	size_t			id_lhand;
 	size_t			id_rhand;
-	pthread_mutex_t	l_hand;
-	pthread_mutex_t	r_hand;
+	pthread_mutex_t	*l_hand;
+	pthread_mutex_t	*r_hand;
 	int				meals;
 	t_table			*table;
 }				t_philo;

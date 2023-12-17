@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 11:45:27 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:09:33 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,11 @@ int	set_table(t_table *table, char *arg[])
 		return (-1);
 	printf("-----TEST ADDRESS FORK-----\n");
 	size_t idx = 0;
-	while (idx++ < table->n_philos)
+	while (idx < table->n_philos)
+	{
 		printf("pointer address of fork %lu is %p\n", idx, &table->fork[idx]);
+		idx++;
+	}
 	/*
 	table->philo = NULL;
 	init_philo(table);
@@ -182,8 +185,8 @@ int	set_philo(t_table *table, t_philo **philo)
 {
 	size_t	idx;
 
-	*philo = (t_philo *)malloc(table->n_philos * sizeof(pthread_t));
-	if (!philo)
+	*philo = (t_philo *)malloc(table->n_philos * sizeof(t_philo));
+	if (!(*philo))
 		return (error_terminate("Error malloc philo matrix"));
 	idx = 0;
 	printf("---INIT PHILO----\n");
@@ -194,20 +197,21 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].meals = table->meals;
 		(*philo)[idx].table = table;
 		(*philo)[idx].id_lhand = (*philo)[idx].id;
-		(*philo)[idx].l_hand = table->fork[idx];
+		printf("pointer address of left fork %lu is %p\n", idx + 1, &table->fork[idx]);
+		(*philo)[idx].l_hand = &table->fork[idx];
 		if ((*philo)[idx].id != (*philo)[idx].table->n_philos)
 		{
 			(*philo)[idx].id_rhand = (*philo)[idx].id + 1;
-			(*philo)[idx].r_hand = table->fork[idx + 1];
+			(*philo)[idx].r_hand = &table->fork[idx + 1];
 		}
 		else
 		{
 			(*philo)[idx].id_rhand = 1;
-			(*philo)[idx].r_hand = table->fork[0];
+			(*philo)[idx].r_hand = &table->fork[0];
 		}
 		printf(BLU"%p philo data: id=%lu ## meals=%i ## pointer table=%p ## "RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meals, (*philo)[idx].table);
-		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## "RST, (*philo)[idx].id_lhand, (*philo)[idx].l_hand);
-		printf(BLU"right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, (*philo)[idx].r_hand);
+		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## "RST, (*philo)[idx].id_lhand, &(*philo)[idx].l_hand);
+		printf(BLU"right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, &(*philo)[idx].r_hand);
 		idx++;
 	}
 	return (0);
