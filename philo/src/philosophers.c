@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 17:33:07 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 17:54:31 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int mails = 0;
 
-int	get_time(void)
+int	get_current_time(void)
 {
 	struct timeval	s_time;
 	
@@ -33,9 +33,9 @@ int	ft_usleep(size_t millisecond)
 {
 	size_t	start;
 
-	start = get_time();
+	start = get_current_time();
 	printf(RED"call to wait ft_usleep time %zu \n"RST, start);
-	while ((get_time() - start) < millisecond)
+	while ((get_current_time() - start) < millisecond)
 		usleep(500);
 	return (0);
 }
@@ -65,10 +65,18 @@ void	*routine(void *ptr)
 		printf("time philo %lu has taken the fork %lu\n", philo->id, philo->id_lhand);
 		pthread_mutex_lock(philo->r_hand);
 		printf("time philo %lu has taken the fork %lu\n", philo->id, philo->id_rhand);
-		philo->eat_flag = 1;
 		printf(HGRN"time philo %lu is eating\n"RST, philo->id);
+		philo->eat_flag = 1;
+		pthread_mutex_lock(&philo->table->eat);
+		philo->meal++;
+		philo->last_meal = get_current_time();
+		printf("philo %lu has eating %lu meals\n"RST, philo->id, philo->meal);
+		pthread_mutex_unlock(&philo->table->eat);
+		//ft_uspleep(ph->life_time);
+		philo->eat_flag = 0;
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
+
 		printf("time philo_id is sleeping\n");
 		printf("time philo_id is thinking\n");
 		printf("time philo_id died\n");
@@ -183,7 +191,7 @@ int	set_table(t_table *table, char *arg[])
 	table->life_time = ft_atoi(arg[2]);
 	table->eat_time = ft_atoi(arg[3]);
 	table->zzz_time = ft_atoi(arg[4]);
-	table->time = get_time();
+	table->time = get_current_time();
 	if (arg[5])
 		table->max_meals = ft_atoi(arg[5]);
 	else
@@ -221,7 +229,7 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].id = idx + 1;
 		(*philo)[idx].life_time = table->life_time;
 		(*philo)[idx].meal = 0;
-		(*philo)[idx].last_meal = get_time();
+		(*philo)[idx].last_meal = get_current_time();
 		(*philo)[idx].table = table;
 		(*philo)[idx].end_flag = 0;
 		(*philo)[idx].eat_flag = 0;
