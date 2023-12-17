@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 12:09:33 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 12:17:00 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,8 +210,8 @@ int	set_philo(t_table *table, t_philo **philo)
 			(*philo)[idx].r_hand = &table->fork[0];
 		}
 		printf(BLU"%p philo data: id=%lu ## meals=%i ## pointer table=%p ## "RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meals, (*philo)[idx].table);
-		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## "RST, (*philo)[idx].id_lhand, &(*philo)[idx].l_hand);
-		printf(BLU"right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, &(*philo)[idx].r_hand);
+		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## "RST, (*philo)[idx].id_lhand, (*philo)[idx].l_hand);
+		printf(BLU"right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, (*philo)[idx].r_hand);
 		idx++;
 	}
 	return (0);
