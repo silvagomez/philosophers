@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 17:54:31 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/17 18:06:45 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,19 @@ void	*routine(void *ptr)
 		philo->last_meal = get_current_time();
 		printf("philo %lu has eating %lu meals\n"RST, philo->id, philo->meal);
 		pthread_mutex_unlock(&philo->table->eat);
-		//ft_uspleep(ph->life_time);
+		//ft_usleep(ph->eat_time);
 		philo->eat_flag = 0;
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
 
 		printf("time philo_id is sleeping\n");
+		//ft_usleep(ph->zzz_time);
+		
 		printf("time philo_id is thinking\n");
+		
 		printf("time philo_id died\n");
+		
+		//test for data race
 		pthread_mutex_lock(&philo->table->mutest);
 		mails++;
 		pthread_mutex_unlock(&philo->table->mutest);
