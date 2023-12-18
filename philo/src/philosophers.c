@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/18 10:53:57 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/18 13:28:29 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	*routine(void *ptr)
 		philo->eat_flag = 0;
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
+
+		ft_usleep(1);
 
 		printf("time philo_id is sleeping\n");
 		//ft_usleep(ph->zzz_time);
