@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/18 13:28:29 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/18 23:50:20 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int mails = 0;
  * The two results are added together to get the total time in milliseconds, 
  * which is then returned by the function.
  */
-int	get_current_time(void)
+size_t	get_current_time(void)
 {
 	struct timeval	s_time;
 	
@@ -32,13 +32,24 @@ int	get_current_time(void)
 
 int	ft_usleep(size_t millisecond)
 {
-	size_t	start;
+	size_t	time_stamp;
 
-	start = get_current_time();
-	printf(RED"call to wait ft_usleep time %zu \n"RST, start);
-	while ((get_current_time() - start) < millisecond)
+	time_stamp = get_current_time();
+	while ((get_current_time() - time_stamp) < millisecond)
 		usleep(500);
 	return (0);
+}
+
+void	eating()
+{
+}
+
+void	sleeping()
+{
+}
+
+void	thinking()
+{
 }
 
 size_t	is_end(t_philo *philo)
@@ -54,7 +65,6 @@ size_t	is_end(t_philo *philo)
  * - sleep
  * - think
  */
-
 void	*routine(void *ptr)
 {
 	t_philo	*philo;
@@ -69,30 +79,48 @@ void	*routine(void *ptr)
 	while (is_end(philo) == 0)
 	{
 		pthread_mutex_lock(philo->l_hand);
-		printf("philo id %lu\n", philo->id);
-		printf("time philo %lu has taken the fork %lu\n", philo->id, philo->id_lhand);
+		pthread_mutex_lock(&philo->table->print);
+		printf("%lu ", get_current_time() - philo->table->time);
+		printf("%lu has taken the fork %lu\n", philo->id, philo->id_lhand);
+		pthread_mutex_unlock(&philo->table->print);
+		
 		pthread_mutex_lock(philo->r_hand);
-		printf("time philo %lu has taken the fork %lu\n", philo->id, philo->id_rhand);
-		printf(HGRN"time philo %lu is eating\n"RST, philo->id);
+		pthread_mutex_lock(&philo->table->print);
+		printf("%lu ", get_current_time() - philo->table->time);
+		printf("%lu has taken the fork %lu\n", philo->id, philo->id_rhand);
+		pthread_mutex_unlock(&philo->table->print);
+		
+		pthread_mutex_lock(&philo->table->print);
+		printf("%lu ", get_current_time() - philo->table->time);
+		printf(HGRN"%lu is eating\n"RST, philo->id);
+		pthread_mutex_unlock(&philo->table->print);
+		
 		philo->eat_flag = 1;
 		pthread_mutex_lock(&philo->table->eat);
 		philo->meal++;
-		philo->last_meal = get_current_time();
-		printf("philo %lu has eating %lu meals\n"RST, philo->id, philo->meal);
-		pthread_mutex_unlock(&philo->table->eat);
-		//ft_usleep(ph->eat_time);
+		philo->last_meal_time = get_current_time();
+		pthread_mutex_lock(&philo->table->print);
+		printf("%lu has eating %lu meals\n"RST, philo->id, philo->meal);
+		pthread_mutex_unlock(&philo->table->print);
+		pthread_mutex_unlock(&philo->table->eat);	
+		ft_usleep(philo->eat_time);
 		philo->eat_flag = 0;
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
 
-		ft_usleep(1);
-
+		pthread_mutex_lock(&philo->table->print);
 		printf("time philo_id is sleeping\n");
-		//ft_usleep(ph->zzz_time);
+		ft_usleep(philo->zzz_time);	
+		pthread_mutex_unlock(&philo->table->print);
 		
+
+		pthread_mutex_lock(&philo->table->print);
 		printf("time philo_id is thinking\n");
+		pthread_mutex_unlock(&philo->table->print);
 		
+		pthread_mutex_lock(&philo->table->print);
 		printf("time philo_id died\n");
+		pthread_mutex_unlock(&philo->table->print);
 		
 		//test for data race
 		pthread_mutex_lock(&philo->table->mutest);
@@ -250,7 +278,7 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].id = idx + 1;
 		(*philo)[idx].life_time = table->life_time;
 		(*philo)[idx].meal = 0;
-		(*philo)[idx].last_meal = get_current_time();
+		(*philo)[idx].last_meal_time = get_current_time();
 		(*philo)[idx].table = table;
 		(*philo)[idx].end_flag = 0;
 		(*philo)[idx].eat_flag = 0;
@@ -269,7 +297,7 @@ int	set_philo(t_table *table, t_philo **philo)
 			(*philo)[idx].r_hand = &table->fork[0];
 		}
 		printf(BLU"%p philo data: id=%lu ## meals=%lu ## pointer table=%p ## "RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meal, (*philo)[idx].table);
-		printf("last_meal: %lu ## life_time philo: %lu ## ", (*philo)[idx].last_meal, (*philo)[idx].life_time);
+		printf("last_meal_time: %lu ## life_time philo: %lu ## ", (*philo)[idx].last_meal_time, (*philo)[idx].life_time);
 		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## ", (*philo)[idx].id_lhand, (*philo)[idx].l_hand);
 		printf("right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, (*philo)[idx].r_hand);
 		idx++;

@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 17:54:36 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/18 23:37:41 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_philo
 	size_t			eat_time;
 	size_t			zzz_time;
 	size_t			meal;
-	size_t			last_meal;
+	size_t			last_meal_time;
 	size_t			id_lhand;
 	size_t			id_rhand;
 	pthread_mutex_t	*l_hand;
