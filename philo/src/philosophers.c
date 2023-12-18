@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 18:06:45 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/18 10:53:57 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@
 
 int mails = 0;
 
+/*
+ * s_time.tv_sec contains the number of seconds.
+ * s_time.tv_usec contains the number of microseconds. 
+ * The expression (s_time.tv_sec * 1000) converts seconds to milliseconds, and 
+ * (s_time.tv_usec / 1000) converts microseconds to milliseconds. 
+ * The two results are added together to get the total time in milliseconds, 
+ * which is then returned by the function.
+ */
 int	get_current_time(void)
 {
 	struct timeval	s_time;
@@ -21,13 +29,6 @@ int	get_current_time(void)
 	gettimeofday(&s_time, NULL);
 	return ((s_time.tv_sec * 1000) + (s_time.tv_usec / 1000));
 }
-
-/*
- * Philosophers routine
- * - eat
- * - sleep
- * - think
- */
 
 int	ft_usleep(size_t millisecond)
 {
@@ -46,6 +47,13 @@ size_t	is_end(t_philo *philo)
 		return (0);
 	return (1);
 }
+
+/*
+ * Philosophers routine
+ * - eat
+ * - sleep
+ * - think
+ */
 
 void	*routine(void *ptr)
 {
@@ -87,6 +95,12 @@ void	*routine(void *ptr)
 		//test for data race
 		pthread_mutex_lock(&philo->table->mutest);
 		mails++;
+		if (mails > 50)
+		{
+			printf(RED"philo id %lu end flag\n"RST, philo->id);
+			philo->end_flag = 1;
+		}
+		printf(YEL"philo id %lu ---> MAILS = %i\n"RST, philo->id, mails);
 		pthread_mutex_unlock(&philo->table->mutest);
 		//break;
 	}
