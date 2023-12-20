@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/20 00:52:15 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/20 10:08:36 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,49 @@ void	ft_usleep(size_t time)
 		usleep(10);
 }
 
+size_t	complete_meals(t_philo *philo)
+{
+	size_t	idx;
+	size_t	menu;
+
+	idx = 0;
+	if (philo->table->max_meals == 0)
+		return (0);
+	menu = 0;
+	while (idx < philo->table->n_philos)
+	{
+		pthread_mutex_lock(philo[idx]->table->eat);
+		//test 0 or idx or nothing
+		if (philo[idx]->meal >= philo[0]->table->max_meals)
+			menu++;
+		idx++;
+		pthread_mutex_unlock(philo[idx]->table->eat);
+	}
+	//test 0 or idx or nothing 
+	if (menu == philo[0]->table->n_philos)
+	{
+		ending();
+	}
+}
+
+size_t	unhappy_philo(t_philo *philo)
+{
+
+}
+
+void	*customer_service(void *ptr)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)ptr;
+	ft_usleep(1);
+	while (1)
+	{
+		if (unhappy_philo(philo) || complete_meals(philo))
+			break ;
+	}
+	return (ptr);
+}
 size_t	is_end(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->table->end);
@@ -140,94 +183,10 @@ void	*routine(void *ptr)
 		cutlery(philo);
 		sleeping(philo);
 		thinking(philo);
-		
-		
-		/*
-		//test for data race
-		pthread_mutex_lock(&philo->table->mutest);
-		mails++;
-		if (mails > 50)
-		{
-			printf(RED"philo id %lu end flag\n"RST, philo->id);
-			philo->ending_flag = 1;
-		}
-		printf(YEL"philo id %lu ---> MAILS = %i\n"RST, philo->id, mails);
-		pthread_mutex_unlock(&philo->table->mutest);
-		*/
-		//break;
 	}
-		return (NULL);
-	//return (ptr);
+	//return (NULL);
+	return (ptr);
 }
-
-/*
- * Returns the last node of philo list.
- */
-/*
-t_philo	*philo_last(t_philo *philo)
-{
-	if (!philo)
-		return (NULL);
-	while(philo->next)
-		philo = philo->next;
-	return (philo);
-}
-*/
-
-/*
- * Creates a new philo node.
- */
-/*
-t_philo	*philo_new(t_table *table, size_t id)
-{
-	t_philo	*node;
-
-	node = (t_philo *)malloc(sizeof(t_philo));
-	if (!node)
-		return (NULL);
-	node->id = id;
-	node->meals = table->meals;
-	node->prev = philo_last(table->philo);
-	node->next = NULL;
-	node->beside = NULL;
-	node->table = table;
-	return (node);
-}
-*/
-
-/*
- * Adds a new philo node to the list, and set the sit order.
- */
-/*
-void	philo_add(t_table *table, t_philo *new)
-{
-	if (!new)
-		return ;
-	if (table->philo != NULL)
-	{
-		philo_last(table->philo)->next = new;
-		philo_last(table->philo)->beside = new;
-		if (philo_last(table->philo)->id == table->n_philos)
-			philo_last(table->philo)->beside = table->philo;
-	}
-	else
-		table->philo = new;
-}
-*/
-
-/*
- * Creates the philo list.
- */
-/*
-void	init_philo(t_table *table)
-{
-	size_t	idx;
-
-	idx = 0;
-	while (++idx <= table->n_philos)
-		philo_add(table, philo_new(table, idx));
-}
-*/
 
 /*
  * Allocates the matrix of mutex per philo fork.
@@ -266,7 +225,7 @@ int	set_table(t_table *table, char *arg[])
 	if (arg[5])
 		table->max_meals = ft_atoi(arg[5]);
 	else
-		table->max_meals = -1;
+		table->max_meals = 0;
 	if (alloc_thread(table) < 0)
 		return (-1);
 	if (alloc_fork(table) < 0)
@@ -304,7 +263,7 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].table = table;
 		(*philo)[idx].ending_flag = 0;
 		(*philo)[idx].eating_flag = 0;
-		(*philo)[idx].printing_flag = 0;
+		//(*philo)[idx].printing_flag = 0;
 		(*philo)[idx].id_lhand = (*philo)[idx].id;
 		printf("pointer address of left fork %lu is %p\n", idx + 1, &table->fork[idx]);
 		(*philo)[idx].l_hand = &table->fork[idx];
@@ -339,7 +298,7 @@ int	philosopher(char *arg[])
 	printf("table.life_time %lu\n", table.life_time);
 	printf("table.eat_time %lu\n", table.eat_time);
 	printf("table.zzz_time %lu\n", table.zzz_time);
-	printf("table.max_meals %i\n", table.max_meals);
+	printf("table.max_meals %lu\n", table.max_meals);
 	printf("table.time %lu\n", table.time);
 	printf("table.philo %p\n", table.philo);
 	printf("table %p\n", &table);
@@ -370,6 +329,9 @@ int	philosopher(char *arg[])
 	printf("the mutexes are initialized\n");
 	
 	// Need a pthread_t for guardian that is the waiter
+	printf("---THREAD WAITER----------------------------------------------\n");
+	if (pthread_create(&table.waiter, NULL, customer_service, philo) != 0)
+		return (error_terminate(ERR_CTH));
 	printf("---THREADS PHILOS---------------------------------------------\n");
 	idx = 0;
 	while (idx < table.n_philos)

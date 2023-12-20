@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/19 23:38:32 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/20 01:21:09 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct s_philo
 	pthread_mutex_t	*r_hand;
 	size_t			eating_flag;
 	size_t			ending_flag;
-	size_t			printing_flag;
 	t_table			*table;
 }				t_philo;
 
@@ -62,7 +61,7 @@ typedef struct s_table
 	size_t			eat_time;
 	size_t			zzz_time;
 	size_t			time;
-	int				max_meals;
+	size_t			max_meals;
 	pthread_t		*th;
 	pthread_t		waiter;
 	pthread_mutex_t	*fork;
