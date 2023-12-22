@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/22 09:44:48 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/22 16:05:32 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	billing(t_philo *philo)
 	size_t	idx;
 
 	idx = 0;
-	while (idx <= philo->table->n_philos)
+	while (idx < philo->table->n_philos)
 	{
 		pthread_mutex_lock(&philo->table->end);
 		philo[idx].ending_flag = 1;
@@ -89,7 +89,7 @@ size_t	complete_meals(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->table->eat);
 		//test 0 or idx or nothing
-		if (philo[idx].meal >= philo->table->max_meals)
+		if (philo[idx].meal >= philo[0].table->max_meals)
 			menu++;
 		idx++;
 		pthread_mutex_unlock(&philo->table->eat);
@@ -110,18 +110,24 @@ size_t	unhappy_philo(t_philo *philo)
 	idx = 0;
 	while (idx < philo->table->n_philos)
 	{
+		printf(YEL"waiter 1\n"RST);
 		pthread_mutex_lock(&philo->table->eat);
-		if ((get_current_time() - philo[idx].last_meal_time) \
-				>= philo->table->life_time && philo[idx].eating_flag == 0)
+		printf(YEL"waiter 1/2\n"RST);
+		if (get_current_time() - philo[idx].last_meal_time >= philo[idx].table->life_time && philo[idx].eating_flag == 0)
 		{
+		printf(YEL"waiter 2\n"RST);
 			billing(philo);
+		printf(YEL"waiter 3\n"RST);
 			dead(philo);
+		printf(YEL"waiter 4\n"RST);
 			pthread_mutex_unlock(&philo->table->eat);
 			return (1);
 		}
 		idx++;
 	}
+		printf(YEL"waiter 5\n"RST);
 	pthread_mutex_unlock(&philo->table->eat);
+		printf(YEL"waiter 6\n"RST);
 	return (0);
 
 }
@@ -372,21 +378,21 @@ int	philosopher(char *arg[])
 	pthread_mutex_init(&table.end, NULL);
 	printf("the mutexes are initialized\n");
 	
+	// Need a pthread_t for guardian that is the waiter
+	printf("---THREAD WAITER----------------------------------------------\n");
+	printf(MAG"WAITER thread is been launched\n"RST);
+	if (pthread_create(&table.waiter, NULL, &customer_service, philo) != 0)
+		return (error_terminate(ERR_CTH));
+	
 	printf("---THREADS PHILOS---------------------------------------------\n");
-
 	idx = 0;
 	while (idx < table.n_philos)
 	{
-		//printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
-		if (pthread_create(&table.th[idx], NULL, routine, &philo[idx]) != 0)
+		printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
+		if (pthread_create(&table.th[idx], NULL, &routine, &philo[idx]) != 0)
 			return (error_terminate(ERR_CTH));
 		idx++;
 	}
-	
-	// Need a pthread_t for guardian that is the waiter
-	//printf("---THREAD WAITER----------------------------------------------\n");
-	//if (pthread_create(&table.waiter, NULL, customer_service, philo) != 0)
-	//	return (error_terminate(ERR_CTH));
 	
 	// create join 
 	idx = 0;
