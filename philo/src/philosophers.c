@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/20 10:08:36 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/22 09:44:48 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,44 @@ void	ft_usleep(size_t time)
 
 	time_stamp = get_current_time();
 	while ((get_current_time() - time_stamp) < time)
-		usleep(10);
+		usleep(500);
+}
+
+size_t	is_end(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->table->end);
+	if (philo->ending_flag == 0)
+	{
+		pthread_mutex_unlock(&philo->table->end);
+		return (0);
+	}
+	pthread_mutex_unlock(&philo->table->end);
+	return (1);
+}
+
+void	dead(t_philo *philo)
+{
+	if (is_end(philo))
+	{
+		pthread_mutex_lock(&philo->table->print);
+		printf("%lums ", (get_current_time() - philo->table->time));
+		printf("%lu died\n", philo->id);
+		pthread_mutex_unlock(&philo->table->print);
+	}
+}
+
+void	billing(t_philo *philo)
+{
+	size_t	idx;
+
+	idx = 0;
+	while (idx <= philo->table->n_philos)
+	{
+		pthread_mutex_lock(&philo->table->end);
+		philo[idx].ending_flag = 1;
+		idx++;
+		pthread_mutex_unlock(&philo->table->end);
+	}
 }
 
 size_t	complete_meals(t_philo *philo)
@@ -50,22 +87,42 @@ size_t	complete_meals(t_philo *philo)
 	menu = 0;
 	while (idx < philo->table->n_philos)
 	{
-		pthread_mutex_lock(philo[idx]->table->eat);
+		pthread_mutex_lock(&philo->table->eat);
 		//test 0 or idx or nothing
-		if (philo[idx]->meal >= philo[0]->table->max_meals)
+		if (philo[idx].meal >= philo->table->max_meals)
 			menu++;
 		idx++;
-		pthread_mutex_unlock(philo[idx]->table->eat);
+		pthread_mutex_unlock(&philo->table->eat);
 	}
-	//test 0 or idx or nothing 
-	if (menu == philo[0]->table->n_philos)
+	// test 0 or idx or nothing 
+	if (menu == philo->table->n_philos)
 	{
-		ending();
+		billing(philo);
+		return (1);
 	}
+	return (0);
 }
 
 size_t	unhappy_philo(t_philo *philo)
 {
+	size_t	idx;
+
+	idx = 0;
+	while (idx < philo->table->n_philos)
+	{
+		pthread_mutex_lock(&philo->table->eat);
+		if ((get_current_time() - philo[idx].last_meal_time) \
+				>= philo->table->life_time && philo[idx].eating_flag == 0)
+		{
+			billing(philo);
+			dead(philo);
+			pthread_mutex_unlock(&philo->table->eat);
+			return (1);
+		}
+		idx++;
+	}
+	pthread_mutex_unlock(&philo->table->eat);
+	return (0);
 
 }
 
@@ -82,23 +139,14 @@ void	*customer_service(void *ptr)
 	}
 	return (ptr);
 }
-size_t	is_end(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->table->end);
-	if (philo->ending_flag == 0)
-	{
-		pthread_mutex_unlock(&philo->table->end);
-		return (0);
-	}
-	pthread_mutex_unlock(&philo->table->end);
-	return (1);
-}
 
 void	eating(t_philo *philo)
-{	
+{
 	pthread_mutex_lock(&philo->table->print);
-	printf("%lums ", (get_current_time() - philo->table->time));
-	printf(HGRN"%lu is eating\n"RST, philo->id);
+	//printf("%lums ", (get_current_time() - philo->table->time));
+	//printf(HGRN"%lu is eating\n"RST, philo->id);
+	printf(HGRN"%lums %lu is eating\n"RST, (get_current_time() - \
+				philo->table->time), philo->id);
 	pthread_mutex_unlock(&philo->table->print);	
 	philo->eating_flag = 1;
 	pthread_mutex_lock(&philo->table->eat);
@@ -107,23 +155,35 @@ void	eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->table->eat);	
 	ft_usleep(philo->table->eat_time);
 	philo->eating_flag = 0;
-	pthread_mutex_unlock(philo->l_hand);
-	pthread_mutex_unlock(philo->r_hand);
 }
 
 void	cutlery(t_philo *philo)
 {
+		pthread_mutex_lock(philo->l_hand);
 	if (!is_end(philo))
 	{
-		pthread_mutex_lock(philo->l_hand);
 		pthread_mutex_lock(&philo->table->print);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu has taken the fork %lu\n", philo->id, philo->id_lhand);
-		pthread_mutex_lock(philo->r_hand);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu has taken the fork %lu\n", philo->id, philo->id_rhand);
+		//printf("%lums ", (get_current_time() - philo->table->time));
+		//printf("%lu has taken the fork %lu\n", philo->id, philo->id_lhand);
+		printf("%lums %lu has taken the fork %lu\n", (get_current_time() - \
+					philo->table->time), philo->id, philo->id_lhand);
 		pthread_mutex_unlock(&philo->table->print);
+	}
+		pthread_mutex_lock(philo->r_hand);
+	if (!is_end(philo))
+	{
+		pthread_mutex_lock(&philo->table->print);
+		//printf("%lums ", (get_current_time() - philo->table->time));
+		//printf("%lu has taken the fork %lu\n", philo->id, philo->id_rhand);
+		printf("%lums %lu has taken the fork %lu\n", (get_current_time() - \
+					philo->table->time), philo->id, philo->id_rhand);
+		pthread_mutex_unlock(&philo->table->print);
+	}
+	if (!is_end(philo))
+	{
 		eating(philo);
+		pthread_mutex_unlock(philo->l_hand);
+		pthread_mutex_unlock(philo->r_hand);
 	}
 }
 
@@ -132,10 +192,12 @@ void	sleeping(t_philo *philo)
 	if (!is_end(philo))
 	{
 		pthread_mutex_lock(&philo->table->print);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu is sleeping\n", philo->id);
-		ft_usleep(philo->table->zzz_time);	
+		//printf("%lums ", (get_current_time() - philo->table->time));
+		//printf("%lu is sleeping\n", philo->id);
+		printf("%lums %lu is sleeping\n", (get_current_time() - \
+					philo->table->time), philo->id);
 		pthread_mutex_unlock(&philo->table->print);
+		ft_usleep(philo->table->zzz_time);	
 	}
 }
 
@@ -144,19 +206,10 @@ void	thinking(t_philo *philo)
 	if (!is_end(philo))
 	{
 		pthread_mutex_lock(&philo->table->print);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu is thinking\n", philo->id);
-		pthread_mutex_unlock(&philo->table->print);
-	}
-}
-
-void	dead(t_philo *philo)
-{
-	if (is_end(philo))
-	{
-		pthread_mutex_lock(&philo->table->print);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu died\n", philo->id);
+		//printf("%lums ", (get_current_time() - philo->table->time));
+		//printf("%lu is thinking\n", philo->id);
+		printf("%lums %lu is thinking\n", (get_current_time() - \
+					philo->table->time), philo->id);
 		pthread_mutex_unlock(&philo->table->print);
 	}
 }
@@ -173,12 +226,9 @@ void	*routine(void *ptr)
 
 	philo = (t_philo *)ptr;
 	if (philo->id % 2 == 0)
-	{
 		ft_usleep(1);
-		printf(RED"philo id %lu\n"RST, philo->id);
-	}
-	//starter
-	while (is_end(philo) == 0)
+	//while (!is_end(philo))
+	while (1)
 	{
 		cutlery(philo);
 		sleeping(philo);
@@ -252,18 +302,14 @@ int	set_philo(t_table *table, t_philo **philo)
 	if (!(*philo))
 		return (error_terminate("Error malloc philo matrix"));
 	idx = 0;
-	printf("---INIT PHILO-------------------------------------------------\n");
 	while (idx < table->n_philos)
 	{
-		printf("philo id %lu + 1 = %lu\n", idx, idx+1);
 		(*philo)[idx].id = idx + 1;
-	//	(*philo)[idx].life_time = table->life_time;
 		(*philo)[idx].meal = 0;
 		(*philo)[idx].last_meal_time = get_current_time();
 		(*philo)[idx].table = table;
 		(*philo)[idx].ending_flag = 0;
 		(*philo)[idx].eating_flag = 0;
-		//(*philo)[idx].printing_flag = 0;
 		(*philo)[idx].id_lhand = (*philo)[idx].id;
 		printf("pointer address of left fork %lu is %p\n", idx + 1, &table->fork[idx]);
 		(*philo)[idx].l_hand = &table->fork[idx];
@@ -290,9 +336,11 @@ int	philosopher(char *arg[])
 {
 	t_table	table;
 	t_philo	*philo;
+	size_t idx;
 
 	if (set_table(&table, arg) < 0)
 		return (-1);
+	
 	printf("---TABLE DATA-------------------------------------------------\n");
 	printf("table.n_philos %lu\n", table.n_philos);
 	printf("table.life_time %lu\n", table.life_time);
@@ -300,48 +348,45 @@ int	philosopher(char *arg[])
 	printf("table.zzz_time %lu\n", table.zzz_time);
 	printf("table.max_meals %lu\n", table.max_meals);
 	printf("table.time %lu\n", table.time);
-	printf("table.philo %p\n", table.philo);
 	printf("table %p\n", &table);
-
+		
 	if (set_philo(&table, &philo) < 0)
 		return (-1);
-
+	
 	printf("---PHILOS-----------------------------------------------------\n");
-	size_t	idx;
 	idx = 0;
-	while(idx < table.n_philos)
+ 	while(idx < table.n_philos)
 	{
 		printf("philo id %lu meals %lu\n", philo[idx].id, philo[idx].meal);
-		printf("philo pointer  %p and pointer table %p\n", &philo[idx], philo[idx].table);
+		printf("philo pointer %p and pointer table %p\n", &philo[idx], philo[idx].table);
 		printf("philo->table->time %lu\n", philo[idx].table->time);
 		idx++;
 	}
-
 	printf("---INIT MUTEX-------------------------------------------------\n");
+
 	idx = 0;
-	// thread routine
 	while (idx < table.n_philos)
 		pthread_mutex_init(&table.fork[idx++], NULL);
 	pthread_mutex_init(&table.eat, NULL);
 	pthread_mutex_init(&table.print, NULL);
 	pthread_mutex_init(&table.end, NULL);
-	pthread_mutex_init(&table.mutest, NULL);
 	printf("the mutexes are initialized\n");
 	
-	// Need a pthread_t for guardian that is the waiter
-	printf("---THREAD WAITER----------------------------------------------\n");
-	if (pthread_create(&table.waiter, NULL, customer_service, philo) != 0)
-		return (error_terminate(ERR_CTH));
 	printf("---THREADS PHILOS---------------------------------------------\n");
+
 	idx = 0;
 	while (idx < table.n_philos)
 	{
-		printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
+		//printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
 		if (pthread_create(&table.th[idx], NULL, routine, &philo[idx]) != 0)
 			return (error_terminate(ERR_CTH));
 		idx++;
 	}
 	
+	// Need a pthread_t for guardian that is the waiter
+	//printf("---THREAD WAITER----------------------------------------------\n");
+	//if (pthread_create(&table.waiter, NULL, customer_service, philo) != 0)
+	//	return (error_terminate(ERR_CTH));
 	
 	// create join 
 	idx = 0;
@@ -359,7 +404,6 @@ int	philosopher(char *arg[])
 	pthread_mutex_destroy(&table.eat);
 	pthread_mutex_destroy(&table.print);
 	pthread_mutex_destroy(&table.end);
-	pthread_mutex_destroy(&table.mutest);
 	printf("Total mails %d\n", mails);
 	
 

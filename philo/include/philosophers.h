@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/20 01:21:09 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/21 23:19:12 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 # include <pthread.h>
 
 # include "error.h"
-
-typedef struct s_table	t_table;
 
 /*
 typedef struct s_philo
@@ -40,20 +38,6 @@ typedef struct s_philo
 }				t_philo;
 */
 
-typedef struct s_philo
-{
-	size_t			id;
-	size_t			meal;
-	size_t			last_meal_time;
-	size_t			id_lhand;
-	size_t			id_rhand;
-	pthread_mutex_t	*l_hand;
-	pthread_mutex_t	*r_hand;
-	size_t			eating_flag;
-	size_t			ending_flag;
-	t_table			*table;
-}				t_philo;
-
 typedef struct s_table
 {
 	size_t			n_philos;
@@ -68,9 +52,21 @@ typedef struct s_table
 	pthread_mutex_t	eat;
 	pthread_mutex_t	print;
 	pthread_mutex_t	end;
-	pthread_mutex_t	mutest;
-	t_philo			*philo;
 }				t_table;
+
+typedef struct s_philo
+{
+	size_t			id;
+	size_t			meal;
+	size_t			last_meal_time;
+	size_t			id_lhand;
+	size_t			id_rhand;
+	pthread_mutex_t	*l_hand;
+	pthread_mutex_t	*r_hand;
+	size_t			eating_flag;
+	size_t			ending_flag;
+	t_table			*table;
+}				t_philo;
 
 // error
 int		error_terminate(char *s);
