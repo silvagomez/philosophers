@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 21:28:02 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/10/27 01:13:30 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 11:26:32 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,13 @@ int	validate_char(char *arg[])
 
 int	validate_arg(char *arg[])
 {
-	// if there is not more to validate, bring fn() above to here.
 	if (validate_char(arg) < 0)
 		return (-1);
-	// error control if number of philo == 1
+	if (ft_atoi(arg[1]) == 1)
+	{
+		printf("0ms 1 has taken the fork 1\n");
+		printf(HRED"%lu 1 died\n"RST, (size_t)ft_atoi(arg[2]));
+		return (-1);
+	}
 	return (1);
 }

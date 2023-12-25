@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/24 09:14:42 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 11:39:29 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ size_t	complete_meals(t_philo *philo)
 		//printf(YEL"meal 5\n"RST);
 	return (0);
 }
-
+/*
 size_t	unhappy_philo(t_philo *philo)
 {
 	size_t	idx;
@@ -142,7 +142,7 @@ size_t	unhappy_philo(t_philo *philo)
 	return (0);
 
 }
-
+*/
 void	unhappy_philox2(t_philo *philo)
 {
 	size_t	idx;
@@ -193,7 +193,7 @@ void	eating(t_philo *philo)
 	printf("%lums ", (get_current_time() - philo->table->time));
 	printf(HGRN"%lu is eating\n"RST, philo->id);
 	pthread_mutex_unlock(&philo->table->print);	
-	philo->eating_flag = 1;
+	//philo->eating_flag = 1;
 	pthread_mutex_lock(&philo->table->eat);
 	philo->meal++;
 	pthread_mutex_unlock(&philo->table->eat);	
@@ -201,7 +201,7 @@ void	eating(t_philo *philo)
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->table->time_stamp);
 	ft_usleep(philo->table->eat_time);
-	philo->eating_flag = 0;
+	//philo->eating_flag = 0;
 }
 
 void	cutlery(t_philo *philo)
@@ -268,7 +268,7 @@ void	*routine(void *ptr)
 
 	philo = (t_philo *)ptr;
 	if (philo->id % 2 == 0)
-		ft_usleep(1);
+		ft_usleep(10);
 	while (!is_end(philo))
 	//while (1)
 	{
@@ -351,7 +351,7 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].last_meal_time = get_current_time();
 		(*philo)[idx].table = table;
 		(*philo)[idx].ending_flag = 0;
-		(*philo)[idx].eating_flag = 0;
+		//(*philo)[idx].eating_flag = 0;
 		(*philo)[idx].id_lhand = (*philo)[idx].id;
 		printf("pointer address of left fork %lu is %p\n", idx + 1, &table->fork[idx]);
 		(*philo)[idx].l_hand = &table->fork[idx];
