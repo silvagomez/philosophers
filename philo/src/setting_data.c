@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 21:27:26 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 13:38:31 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 18:15:14 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,21 @@ int	alloc_thread(t_table *table)
 }
 
 /*
+void	address_fork(t_table *table)
+{
+	size_t	idx;
+
+	printf("-----TEST ADDRESS FORK----------------------------------------\n");
+	idx = 0;
+	while (idx < table->n_philos)
+	{
+		printf("pointer address of fork %lu is %p\n", idx, &table->fork[idx]);
+		idx++;
+	}
+}
+*/
+
+/*
  * This functions initializes varriables of the table.
  */
 int	set_table(t_table *table, char *arg[])
@@ -53,27 +68,35 @@ int	set_table(t_table *table, char *arg[])
 		return (-1);
 	if (alloc_fork(table) < 0)
 		return (-1);
-	printf("-----TEST ADDRESS FORK----------------------------------------\n");
-	size_t idx = 0;
-	while (idx < table->n_philos)
-	{
-		printf("pointer address of fork %lu is %p\n", idx, &table->fork[idx]);
-		idx++;
-	}
-	/*
-	table->philo = NULL;
-	init_philo(table);
-	*/
 	return (0);
 }
 
-int	set_philo(t_table *table, t_philo **philo)
+/*
+void	address_of_philo(t_table *table)
 {
 	size_t	idx;
 
-	*philo = (t_philo *)malloc(table->n_philos * sizeof(t_philo));
-	if (!(*philo))
-		return (error_terminate("Error malloc philo matrix"));
+	printf("pointer address of left fork %lu is %p\n", idx + 1, \
+			&table->fork[idx]);
+	//
+	idx = 0;
+	while (idx < table->n_philos)
+	{
+		printf(BLU"%p philo data: id=%lu ## meals=%lu ## pointer table=%p ## "RST, \
+		&(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meal, (*philo)[idx].table);
+		printf("last_meal_time: %lu ## ", (*philo)[idx].last_meal_time);
+		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## ", \
+		(*philo)[idx].id_lhand, (*philo)[idx].l_hand);
+		printf("right fork id=%lu ## right fork mutex pointer %p ##\n"RST, \
+		(*philo)[idx].id_rhand, (*philo)[idx].r_hand);
+		idx++;
+	}	
+}
+*/
+void	set_philo(t_table *table, t_philo **philo)
+{
+	size_t	idx;
+
 	idx = 0;
 	while (idx < table->n_philos)
 	{
@@ -82,9 +105,7 @@ int	set_philo(t_table *table, t_philo **philo)
 		(*philo)[idx].last_meal_time = get_current_time();
 		(*philo)[idx].table = table;
 		(*philo)[idx].ending_flag = 0;
-		//(*philo)[idx].eating_flag = 0;
 		(*philo)[idx].id_lhand = (*philo)[idx].id;
-		printf("pointer address of left fork %lu is %p\n", idx + 1, &table->fork[idx]);
 		(*philo)[idx].l_hand = &table->fork[idx];
 		if ((*philo)[idx].id != (*philo)[idx].table->n_philos)
 		{
@@ -96,13 +117,14 @@ int	set_philo(t_table *table, t_philo **philo)
 			(*philo)[idx].id_rhand = 1;
 			(*philo)[idx].r_hand = &table->fork[0];
 		}
-		printf(BLU"%p philo data: id=%lu ## meals=%lu ## pointer table=%p ## "RST, &(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meal, (*philo)[idx].table);
-		printf("last_meal_time: %lu ## ", (*philo)[idx].last_meal_time);
-		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## ", (*philo)[idx].id_lhand, (*philo)[idx].l_hand);
-		printf("right fork id=%lu ## right fork mutex pointer %p ##\n"RST, (*philo)[idx].id_rhand, (*philo)[idx].r_hand);
 		idx++;
 	}
-	return (0);
 }
 
-
+int	alloc_philo(t_table *table, t_philo **philo)
+{
+	*philo = (t_philo *)malloc(table->n_philos * sizeof(t_philo));
+	if (!(*philo))
+		return (error_terminate("Error malloc philo matrix"));
+	return (0);
+}

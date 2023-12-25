@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 16:46:27 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 18:43:45 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ typedef struct s_philo
 	size_t			id_rhand;
 	pthread_mutex_t	*l_hand;
 	pthread_mutex_t	*r_hand;
-	//size_t			eating_flag;
 	size_t			ending_flag;
 	t_table			*table;
 }				t_philo;
@@ -84,19 +83,20 @@ int		ft_atoi(const char *str);
 int		philosopher(char *arg[]);
 
 // setting_data
-int	set_table(t_table *table, char *arg[]);
-int	set_philo(t_table *table, t_philo **philo);
-int	alloc_fork(t_table *table);
-int	alloc_thread(t_table *table);
+int		set_table(t_table *table, char *arg[]);
+int		alloc_philo(t_table *table, t_philo **philo);
+void	set_philo(t_table *table, t_philo **philo);
+int		alloc_fork(t_table *table);
+int		alloc_thread(t_table *table);
 
 //mutexing
 void	init_mutex(t_table *table);
 void	destroy_mutex(t_table *table);
 
 //threading
-int	launching_thread(t_table *table, t_philo **philo);
-int	waiting_for_thread(t_table *table);
-void	*routine(void *ptr);
+int		launching_thread(t_table *table, t_philo **philo);
+int		waiting_for_thread(t_table *table);
+void	*dinner(void *ptr);
 void	*customer_service(void *ptr);
 
 // utils_2
@@ -111,9 +111,8 @@ void	sleeping(t_philo *philo);
 void	thinking(t_philo *philo);
 
 // waiter_routine
-void	unhappy_philox2(t_philo *philo);
+void	unhappy_philo(t_philo *philo);
 size_t	complete_meals(t_philo *philo);
 void	billing(t_philo *philo);
 void	dead(t_philo *philo);
-size_t	is_end(t_philo *philo);
 #endif

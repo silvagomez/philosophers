@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 21:22:09 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 16:42:18 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 18:13:42 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->table->print);
 	printf("%lums ", (get_current_time() - philo->table->time));
 	printf(HGRN"%lu is eating\n"RST, philo->id);
-	pthread_mutex_unlock(&philo->table->print);	
+	pthread_mutex_unlock(&philo->table->print);
 	pthread_mutex_lock(&philo->table->eat);
 	philo->meal++;
-	pthread_mutex_unlock(&philo->table->eat);	
+	pthread_mutex_unlock(&philo->table->eat);
 	pthread_mutex_lock(&philo->table->time_stamp);
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->table->time_stamp);
@@ -50,9 +50,6 @@ void	cutlery(t_philo *philo)
 		eating(philo);
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
-		pthread_mutex_lock(&philo->table->print);
-        printf(RED"IF %lums Philo %lu unlocked forks after eating\n"RST, (get_current_time() - philo->table->time), philo->id);
-		pthread_mutex_unlock(&philo->table->print);
 	}
 }
 
@@ -64,7 +61,7 @@ void	sleeping(t_philo *philo)
 		printf("%lums ", (get_current_time() - philo->table->time));
 		printf("%lu is sleeping\n", philo->id);
 		pthread_mutex_unlock(&philo->table->print);
-		ft_usleep(philo->table->zzz_time);	
+		ft_usleep(philo->table->zzz_time);
 	}
 }
 

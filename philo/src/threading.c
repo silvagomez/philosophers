@@ -6,23 +6,27 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/25 13:27:56 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 16:39:59 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 18:24:55 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+/*
+ * Waiter routine
+ * - monitor philos meals
+ * - monitor unhappy dead
+ */
 void	*customer_service(void *ptr)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	
 	while (!is_end(philo))
 	{
 		ft_usleep(10);
 		complete_meals(philo);
-		unhappy_philox2(philo);
+		unhappy_philo(philo);
 	}
 	return (ptr);
 }
@@ -33,7 +37,7 @@ void	*customer_service(void *ptr)
  * - sleep
  * - think
  */
-void	*routine(void *ptr)
+void	*dinner(void *ptr)
 {
 	t_philo	*philo;
 
@@ -41,15 +45,23 @@ void	*routine(void *ptr)
 	if (philo->id % 2 == 0)
 		ft_usleep(10);
 	while (!is_end(philo))
-	//while (1)
 	{
 		cutlery(philo);
 		sleeping(philo);
 		thinking(philo);
 	}
-	//return (NULL);
 	return (ptr);
 }
+
+/*
+void	launching(void)
+{
+	printf("---THREAD WAITER----------------------------------------------\n");
+	printf(MAG"WAITER thread is been launched\n"RST);
+	printf("---THREADS PHILOS---------------------------------------------\n");
+	printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
+}
+*/
 
 int	launching_thread(t_table *table, t_philo **philo)
 {
@@ -60,26 +72,33 @@ int	launching_thread(t_table *table, t_philo **philo)
 	idx = 0;
 	while (idx < table->n_philos)
 	{
-		printf(MAG"Philo %zu thread is been launched\n"RST, idx + 1);
-		if (pthread_create(&table->th[idx], NULL, &routine, &(*philo)[idx]) != 0)
+		if (pthread_create(&table->th[idx], NULL, &dinner, &(*philo)[idx]) != 0)
 			return (error_terminate(ERR_CTH));
 		idx++;
 	}
 	return (1);
 }
 
+/*
+void	waiting(void)
+{
+	printf("---WAITING THREAD --------------------------------------------\n");
+	printf(HCYN"Waiter thread has finished\n"RST);
+	printf(HCYN"Philo %zu thread has finished\n"RST, idx + 1);
+}
+*/
+
 int	waiting_for_thread(t_table *table)
 {
 	size_t	idx;
+
 	if (pthread_join(table->waiter, NULL) != 0)
 		return (error_terminate(ERR_JTH));
-	printf(HCYN"Waiter thread has finished\n"RST);
 	idx = 0;
 	while (idx < table->n_philos)
 	{
 		if (pthread_join(table->th[idx], NULL) != 0)
 			return (error_terminate(ERR_JTH));
-		printf(HCYN"Philo %zu thread has finished\n"RST, idx + 1);
 		idx++;
 	}
 	return (1);

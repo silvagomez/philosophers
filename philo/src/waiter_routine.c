@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 21:22:18 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 16:40:54 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 18:13:58 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,39 +64,7 @@ size_t	complete_meals(t_philo *philo)
 	return (0);
 }
 
-/*
-size_t	unhappy_philo(t_philo *philo)
-{
-	size_t	idx;
-
-	idx = 0;
-	while (idx < philo[idx].table->n_philos)
-	{
-		printf(YEL"waiter 1\n"RST);
-		printf(YEL"al init idx=%lu\n"RST, idx);
-		pthread_mutex_lock(&philo->table->eat);
-		printf(YEL"waiter 1/2\n"RST);
-		if ((get_current_time() - philo[idx].last_meal_time) >= philo[idx].table->life_time && philo[idx].eating_flag == 0)
-		{
-			printf(YEL"waiter 2\n"RST);
-			billing(philo);
-			printf(YEL"waiter 3\n"RST);
-			dead(philo);
-			printf(YEL"waiter 4\n"RST);
-			pthread_mutex_unlock(&philo->table->eat);
-			return (1);
-		}
-		idx++;
-		printf(YEL"idx=%lu\n"RST, idx);
-	}
-	printf(YEL"waiter 5\n"RST);
-	pthread_mutex_unlock(&philo->table->eat);
-	printf(YEL"waiter 6\n"RST);
-	return (0);
-}
-*/
-
-void	unhappy_philox2(t_philo *philo)
+void	unhappy_philo(t_philo *philo)
 {
 	size_t	idx;
 
@@ -114,4 +82,3 @@ void	unhappy_philox2(t_philo *philo)
 		pthread_mutex_unlock(&philo->table->time_stamp);
 	}
 }
-
