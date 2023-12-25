@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/22 15:29:57 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/23 23:07:55 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_table
 	pthread_mutex_t	eat;
 	pthread_mutex_t	print;
 	pthread_mutex_t	end;
+	pthread_mutex_t	time_stamp;
 }				t_table;
 
 typedef struct s_philo

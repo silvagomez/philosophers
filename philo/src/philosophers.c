@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/23 10:47:37 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/24 09:14:42 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ void	ft_usleep(size_t time)
 size_t	is_end(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->table->end);
-	if (philo->ending_flag == 0)
+	if (philo->ending_flag == 1)
 	{
 		pthread_mutex_unlock(&philo->table->end);
-		return (0);
+		return (1);
 	}
 	pthread_mutex_unlock(&philo->table->end);
-	return (1);
+	return (0);
 }
 
 void	dead(t_philo *philo)
@@ -56,8 +56,8 @@ void	dead(t_philo *philo)
 	if (is_end(philo))
 	{
 		pthread_mutex_lock(&philo->table->print);
-		printf("%lums ", (get_current_time() - philo->table->time));
-		printf("%lu died\n", philo->id);
+		printf(HRED"%lums ", (get_current_time() - philo->table->time));
+		printf("%lu died\n"RST, philo->id);
 		pthread_mutex_unlock(&philo->table->print);
 	}
 }
@@ -82,10 +82,10 @@ size_t	complete_meals(t_philo *philo)
 	size_t	menu;
 
 	idx = 0;
-	printf(YEL"meal\n"RST);
+	//printf(YEL"meal\n"RST);
 	if (philo->table->max_meals == 0)
 	{
-		printf(YEL"meal 0\n"RST);
+		//printf(YEL"meal 0\n"RST);
 		return (0);
 	}
 	menu = 0;
@@ -93,22 +93,22 @@ size_t	complete_meals(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->table->eat);
 		//test 0 or idx or nothing
-		printf(YEL"meal 1\n"RST);
+		//printf(YEL"meal 1\n"RST);
 		if (philo[idx].meal >= philo[0].table->max_meals)
 			menu++;
 		idx++;
-		printf(YEL"meal 2\n"RST);
+		//printf(YEL"meal 2\n"RST);
 		pthread_mutex_unlock(&philo->table->eat);
 	}
 	// test 0 or idx or nothing 
 	if (menu == philo->table->n_philos)
 	{
-		printf(YEL"meal 3\n"RST);
+		//printf(YEL"meal 3\n"RST);
 		billing(philo);
-		printf(YEL"meal 4\n"RST);
+		//printf(YEL"meal 4\n"RST);
 		return (1);
 	}
-		printf(YEL"meal 5\n"RST);
+		//printf(YEL"meal 5\n"RST);
 	return (0);
 }
 
@@ -123,7 +123,7 @@ size_t	unhappy_philo(t_philo *philo)
 		printf(YEL"al init idx=%lu\n"RST, idx);
 		pthread_mutex_lock(&philo->table->eat);
 		printf(YEL"waiter 1/2\n"RST);
-		if (get_current_time() - philo[idx].last_meal_time >= philo[idx].table->life_time && philo[idx].eating_flag == 0)
+		if ((get_current_time() - philo[idx].last_meal_time) >= philo[idx].table->life_time && philo[idx].eating_flag == 0)
 		{
 			printf(YEL"waiter 2\n"RST);
 			billing(philo);
@@ -143,11 +143,37 @@ size_t	unhappy_philo(t_philo *philo)
 
 }
 
+void	unhappy_philox2(t_philo *philo)
+{
+	size_t	idx;
+
+	idx = 0;
+	while (!is_end(philo) && idx < philo->table->n_philos)
+	{
+		pthread_mutex_lock(&philo->table->time_stamp);
+		if ((get_current_time() - philo[idx].last_meal_time) >= philo[idx].table->life_time)
+		{
+			billing(philo);
+			dead(philo);
+		}
+		idx++;
+		pthread_mutex_unlock(&philo->table->time_stamp);
+	}
+}
+
 void	*customer_service(void *ptr)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
+	
+	while (!is_end(philo))
+	{
+		ft_usleep(10);
+		complete_meals(philo);
+		unhappy_philox2(philo);
+	}
+	/*
 	ft_usleep(2);
 	while (1)
 	{
@@ -157,6 +183,7 @@ void	*customer_service(void *ptr)
 		printf("Waiter after if: Checking conditions...\n");
 	}
 	printf("Waiter: Exiting...\n");
+	*/
 	return (ptr);
 }
 
@@ -169,8 +196,10 @@ void	eating(t_philo *philo)
 	philo->eating_flag = 1;
 	pthread_mutex_lock(&philo->table->eat);
 	philo->meal++;
-	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->table->eat);	
+	pthread_mutex_lock(&philo->table->time_stamp);
+	philo->last_meal_time = get_current_time();
+	pthread_mutex_unlock(&philo->table->time_stamp);
 	ft_usleep(philo->table->eat_time);
 	philo->eating_flag = 0;
 }
@@ -198,15 +227,9 @@ void	cutlery(t_philo *philo)
 		eating(philo);
 		pthread_mutex_unlock(philo->l_hand);
 		pthread_mutex_unlock(philo->r_hand);
+		pthread_mutex_lock(&philo->table->print);
         printf(RED"IF %lums Philo %lu unlocked forks after eating\n"RST, (get_current_time() - philo->table->time), philo->id);
-
-	}
-	else
-	{
-		pthread_mutex_unlock(philo->l_hand);
-		pthread_mutex_unlock(philo->r_hand);
-        printf(HRED"ELSE %lums Philo %lu unlocked forks after eating\n"RST, (get_current_time() - philo->table->time), philo->id);
-
+		pthread_mutex_unlock(&philo->table->print);
 	}
 }
 
@@ -389,6 +412,7 @@ int	philosopher(char *arg[])
 	pthread_mutex_init(&table.eat, NULL);
 	pthread_mutex_init(&table.print, NULL);
 	pthread_mutex_init(&table.end, NULL);
+	pthread_mutex_init(&table.time_stamp, NULL);
 	printf("the mutexes are initialized\n");
 	
 	// Need a pthread_t for guardian that is the waiter
@@ -426,6 +450,7 @@ int	philosopher(char *arg[])
 	pthread_mutex_destroy(&table.eat);
 	pthread_mutex_destroy(&table.print);
 	pthread_mutex_destroy(&table.end);
+	pthread_mutex_destroy(&table.time_stamp);
 	printf("Total mails %d\n", mails);
 	
 
