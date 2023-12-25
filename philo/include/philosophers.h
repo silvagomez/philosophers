@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 11:28:59 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/25 16:46:27 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,37 @@ int		ft_atoi(const char *str);
 // philosophers
 int		philosopher(char *arg[]);
 
+// setting_data
+int	set_table(t_table *table, char *arg[]);
+int	set_philo(t_table *table, t_philo **philo);
+int	alloc_fork(t_table *table);
+int	alloc_thread(t_table *table);
+
+//mutexing
+void	init_mutex(t_table *table);
+void	destroy_mutex(t_table *table);
+
+//threading
+int	launching_thread(t_table *table, t_philo **philo);
+int	waiting_for_thread(t_table *table);
+void	*routine(void *ptr);
+void	*customer_service(void *ptr);
+
+// utils_2
+size_t	get_current_time(void);
+void	ft_usleep(size_t time);
+size_t	is_end(t_philo *philo);
+
+// philosopher_routine
+void	cutlery(t_philo *philo);
+void	eating(t_philo *philo);
+void	sleeping(t_philo *philo);
+void	thinking(t_philo *philo);
+
+// waiter_routine
+void	unhappy_philox2(t_philo *philo);
+size_t	complete_meals(t_philo *philo);
+void	billing(t_philo *philo);
+void	dead(t_philo *philo);
+size_t	is_end(t_philo *philo);
 #endif

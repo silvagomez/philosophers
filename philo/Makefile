@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/12/25 09:36:52 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/25 16:07:22 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,14 @@ SRC				:=	\
 					main.c \
 					error.c \
 					validate.c \
-					philo_utils_1.c \
-					philosophers.c
+					utils_1.c \
+					utils_2.c \
+					philosophers.c \
+					setting_data.c \
+					mutexing.c \
+					threading.c \
+					philosopher_routine.c \
+					waiter_routine.c
 
 SRC				:=	$(SRC:%=$(SRC_PATH)%)
 
