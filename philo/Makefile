@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/12/26 13:29:51 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/26 13:37:43 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,7 +73,7 @@ bonus			:
 clean			:
 					$(RM) $(RMFLAG) $(OBJ_PATH)
 					$(RM) $(RMFLAG) $(OBJ_BPATH)
-					@echo -e "$(MAGENTA)Removing fdf files... $(GREEN)done!$(WHITE)"
+					@echo -e "$(MAGENTA)Removing $(NAME) files... $(GREEN)done!$(WHITE)"
 
 fclean			:	clean
 					$(RM) $(RMFLAG) $(NAME)
