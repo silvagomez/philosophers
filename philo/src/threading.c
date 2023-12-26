@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/25 13:27:56 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 18:24:55 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 12:36:04 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	*customer_service(void *ptr)
 	philo = (t_philo *)ptr;
 	while (!is_end(philo))
 	{
-		ft_usleep(10);
+		ft_usleep(1);
 		complete_meals(philo);
 		unhappy_philo(philo);
 	}
