@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/12/26 10:52:19 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/26 13:29:51 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,15 +18,12 @@ NAME_BONUS		:=	philo_bonus
 #------------------------------------------------------------------------------#
 
 CC				:=	cc
-CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=address -g3
-#CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=thread -g3
+#CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=address -g3
+CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=thread -g3
 #CFLAGS			:=	-Wall -Wextra -Werror -g
 
 INCLUDE_PATH	:=	include/
 INCLUDE			:=	$(INCLUDE_PATH)philosophers.h
-
-INCLUDE_BPATH	:=	include_bonus/
-INCLUDE_B		:=	$(INCLUDE_BPATH)philophoser_bonus.h
 
 SRC_PATH		:=	src/
 SRC				:=	\
@@ -44,19 +41,8 @@ SRC				:=	\
 
 SRC				:=	$(SRC:%=$(SRC_PATH)%)
 
-SRC_BPATH		:=	src_bonus/
-SRC_BONUS		:=	\
-					main_bonus.c \
-					error_bonus.c \
-					validate_bonus.c 
-
-SRC_BONUS		:=	$(SRC_BONUS:%=$(SRC_BPATH)%)
-
 OBJ_PATH		:=	obj/
 OBJ				:=	$(SRC:$(SRC_PATH)%.c=$(OBJ_PATH)%.o)
-
-OBJ_BPATH		:=	obj_bonus/
-OBJ_BONUS		:=	$(SRC_BONUS:$(SRC_BPATH)%.c=$(OBJ_BPATH)%.o)
 
 #------------------------------------------------------------------------------#
 #   UTENSILS                                                                   #
@@ -75,22 +61,14 @@ all				:	$(NAME)
 
 $(NAME)			:	$(OBJ) 
 					$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-					@echo -e "$(MAGENTA)File $(NAME)$(GREEN) compiled!$(WHITE)"
+					@echo -e "$(MAGENTA)Files of $(NAME)$(GREEN) compiled!$(WHITE)"
 
 $(OBJ_PATH)%.o	:	$(SRC_PATH)%.c
 				  	$(DIR_DUP)
 					$(CC) $(CFLAGS) -I $(INCLUDE_PATH) -c $< -o $@
 
-bonus			:	$(NAME_BONUS)
-
-$(NAME_BONUS)	:	$(OBJ_BONUS)
-					$(CC) $(CFLAGS) $(OBJ_BONUS) -o $(NAME_BONUS)
-					@echo -e "$(MAGENTA)File $(NAME_BONUS)$(GREEN) compiled!$(WHITE)"
-
-
-$(OBJ_BPATH)%.o	:	$(SRC_BPATH)%.c
-				  	$(DIR_DUP)
-					$(CC) $(CFLAGS) -I $(INCLUDE_BPATH) -c $< -o $@
+bonus			:	
+					@echo -e "$(MAGENTA)Go to the philo_bonus directory$(WHITE)"
 
 clean			:
 					$(RM) $(RMFLAG) $(OBJ_PATH)
