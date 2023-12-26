@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/12/26 12:21:17 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/26 13:52:47 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,11 +56,11 @@ DIR_DUP			=	mkdir -p $(@D)
 
 all				:	$(NAME_BONUS)
 
-bonus			:	$(NAME_BONUS)
+bonus			:	all
 
 $(NAME_BONUS)	:	$(OBJ_BONUS)
 					$(CC) $(CFLAGS) $(OBJ_BONUS) -o $(NAME_BONUS)
-					@echo -e "$(MAGENTA)File $(NAME_BONUS)$(GREEN) compiled!$(WHITE)"
+					@echo -e "$(MAGENTA)Files of $(NAME_BONUS)$(GREEN) compiled!$(WHITE)"
 
 
 $(OBJ_BPATH)%.o	:	$(SRC_BPATH)%.c
@@ -70,12 +70,12 @@ $(OBJ_BPATH)%.o	:	$(SRC_BPATH)%.c
 clean			:
 					$(RM) $(RMFLAG) $(OBJ_PATH)
 					$(RM) $(RMFLAG) $(OBJ_BPATH)
-					@echo -e "$(MAGENTA)Removing fdf files... $(GREEN)done!$(WHITE)"
+					@echo -e "$(MAGENTA)Removing $(NAME_BONUS) files... $(GREEN)done!$(WHITE)"
 
 fclean			:	clean
 					$(RM) $(RMFLAG) $(NAME)
 					$(RM) $(RMFLAG) $(NAME_BONUS)
-					@echo -e "$(MAGENTA)Removing $(NAME) $(GREEN)done!$(WHITE)"
+					@echo -e "$(MAGENTA)Removing $(NAME_BONUS) $(GREEN)done!$(WHITE)"
 
 re				:	fclean all
 

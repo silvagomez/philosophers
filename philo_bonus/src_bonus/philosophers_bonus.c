@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 00:00:43 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 12:18:17 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 13:58:48 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	terminate_philosopher(t_philo *philo)
 		{
 			idx = 0;
 			while (idx < philo->n_philos)
-					kill(philo->pid[idx++], SIGKILL);
-			break;
+				kill(philo->pid[idx++], SIGKILL);
+			break ;
 		}
 		idx++;
 	}
@@ -68,7 +68,7 @@ int	philosopher(char *arg[])
 		if (philo.pid[idx] == 0)
 		{
 			philo.id = idx + 1;
-			//philo.last_meal_time = get_current_time();
+			philo.last_meal_time = get_current_time();
 			launching(&philo);
 		}
 		idx++;

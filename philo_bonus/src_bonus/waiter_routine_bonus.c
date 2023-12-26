@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 21:22:18 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 12:18:13 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 14:06:12 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ size_t	complete_meals(t_philo *philo)
 	sem_wait(philo->eat);
 	if (philo->meal == philo->max_meals)
 	{
-		//sem_pos(philo->eat);
 		sem_post(philo->fork);
 		sem_post(philo->fork);
 		return (1);
@@ -43,8 +42,8 @@ size_t	unhappy_philo(t_philo *philo)
 	sem_wait(philo->time_stamp);
 	if ((get_current_time() - philo->last_meal_time) >= philo->life_time)
 	{
+		//sem_wait(philo->end);
 		dead(philo);
-		//sem_post(philo->time_stamp);
 		return (1);
 	}
 	sem_post(philo->time_stamp);
@@ -63,7 +62,7 @@ void	*customer_service(void *ptr)
 	philo = (t_philo *)ptr;
 	while (1)
 	{
-		ft_usleep(10);
+		ft_usleep(1);
 		if (unhappy_philo(philo))
 			exit(1);
 		if (complete_meals(philo))

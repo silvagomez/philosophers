@@ -6,12 +6,12 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 23:18:45 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 14:22:26 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 13:57:58 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
+#ifndef ERROR_BONUS_H
+# define ERROR_BONUS_H
 
 # define ERR_ARG "ERROR: invalid number of arguments."
 # define ERR_CHR "ERROR: args should be digits."
