@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 21:27:26 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 18:15:14 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 10:58:20 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ void	address_of_philo(t_table *table)
 	idx = 0;
 	while (idx < table->n_philos)
 	{
-		printf(BLU"%p philo data: id=%lu ## meals=%lu ## pointer table=%p ## "RST, \
-		&(*philo)[idx], (*philo)[idx].id, (*philo)[idx].meal, (*philo)[idx].table);
+		printf(BLU"%p philo data: id=%lu ## meals=%lu ## \
+				pointer table=%p ## "RST, &(*philo)[idx], (*philo)[idx].id, \
+				(*philo)[idx].meal, (*philo)[idx].table);
 		printf("last_meal_time: %lu ## ", (*philo)[idx].last_meal_time);
 		printf(HBLU"left fork id=%lu ## left fork mutex pointer %p ## ", \
 		(*philo)[idx].id_lhand, (*philo)[idx].l_hand);
@@ -93,6 +94,7 @@ void	address_of_philo(t_table *table)
 	}	
 }
 */
+
 void	set_philo(t_table *table, t_philo **philo)
 {
 	size_t	idx;
@@ -125,6 +127,6 @@ int	alloc_philo(t_table *table, t_philo **philo)
 {
 	*philo = (t_philo *)malloc(table->n_philos * sizeof(t_philo));
 	if (!(*philo))
-		return (error_terminate("Error malloc philo matrix"));
+		return (error_terminate(ERR_MPH));
 	return (0);
 }

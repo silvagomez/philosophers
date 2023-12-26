@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 23:18:45 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/17 14:22:26 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 10:56:02 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define ERR_JTH "ERROR: calling wait thread."
 # define ERR_MTH "ERROR: malloc thread."
 # define ERR_MMT "ERROR: malloc mutex."
+# define ERR_MPH "ERROR: malloc philo sructure"
 
 //COLOR
 # define BLK	"\033[30m"
