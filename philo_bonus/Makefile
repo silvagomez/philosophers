@@ -6,7 +6,7 @@
 #    By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 21:53:56 by dsilva-g          #+#    #+#              #
-#    Updated: 2023/12/26 00:17:15 by dsilva-g         ###   ########.fr        #
+#    Updated: 2023/12/26 12:21:17 by dsilva-g         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,10 @@ SRC_BONUS		:=	\
 					validate_bonus.c \
 					utils_bonus_1.c \
 					utils_bonus_2.c \
-					philosophers_bonus.c
+					philosophers_bonus.c \
+					setting_data_bonus.c \
+					philosopher_routine_bonus.c \
+					waiter_routine_bonus.c
 
 SRC_BONUS		:=	$(SRC_BONUS:%=$(SRC_BPATH)%)
 

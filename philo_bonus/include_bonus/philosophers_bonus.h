@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 01:18:55 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/26 12:17:59 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,38 +49,42 @@ typedef struct s_philo
 	pthread_t	waiter;
 }				t_philo;
 
-// error
+// error_bonus
 int		error_terminate(char *s);
 
-// validate
+// validate_bonus
 int		validate_arg(char *ar[]);
 
-// utils_1
+// utils_1_bonus
 void	ft_putendl_fd(char *s, int fd);
 int		ft_isdigit(int c);
 int		ft_atoi(const char *str);
 
-// philosophers
-int		philosopher(char *arg[]);
-
-// setting_data
+// setting_data_bonus
+void	open_semaphore(t_philo *philo);
+void	close_semaphore(t_philo *philo);
 void	set_philo(t_philo *philo, char *arg[]);
 int		alloc_pid(t_philo *philo);
 
+// philosophers_bonus
+int		philosopher(char *arg[]);
 
-//threading
+// setting_data_bonus
+void	set_philo(t_philo *philo, char *arg[]);
+int		alloc_pid(t_philo *philo);
 
-// utils_2
+// utils_2_bonus
 size_t	get_current_time(void);
 void	ft_usleep(size_t time);
 size_t	is_end(t_philo *philo);
 
-// philosopher_routine
+// philosopher_routine_bonus
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
 void	thinking(t_philo *philo);
 
-// waiter_routine
+// waiter_routine_bonus
+void	*customer_service(void *ptr);
 size_t	unhappy_philo(t_philo *philo);
 size_t	complete_meals(t_philo *philo);
 void	dead(t_philo *philo);
