@@ -5,6 +5,7 @@
 *.o
 *.bk
 *.a
+*.vim
 .idea
 .vscode
 tags
