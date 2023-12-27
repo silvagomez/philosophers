@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 21:22:18 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 14:06:12 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/27 20:33:13 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 size_t	complete_meals(t_philo *philo)
 {
 	if (philo->max_meals == 0)
-	{
 		return (0);
-	}
 	sem_wait(philo->eat);
 	if (philo->meal == philo->max_meals)
 	{
@@ -66,7 +64,10 @@ void	*customer_service(void *ptr)
 		if (unhappy_philo(philo))
 			exit(1);
 		if (complete_meals(philo))
+		{
+			sem_post(philo->eat);
 			exit(0);
+		}
 	}
 	return (ptr);
 }
