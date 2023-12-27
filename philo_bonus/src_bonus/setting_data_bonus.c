@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 21:27:26 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 11:48:30 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/27 21:37:23 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,10 @@ void	open_semaphore(t_philo *philo)
 	sem_unlink("print");
 	sem_unlink("eat");
 	sem_unlink("time_stamp");
-	sem_unlink("end");
 	philo->fork = sem_open("fork", O_CREAT, 0644, philo->n_philos);
 	philo->print = sem_open("print", O_CREAT, 0644, 1);
 	philo->eat = sem_open("eat", O_CREAT, 0644, 1);
 	philo->time_stamp = sem_open("time_stamp", O_CREAT, 0644, 1);
-	philo->end = sem_open("end", O_CREAT, 0644, 1);
 }
 
 void	close_semaphore(t_philo *philo)
@@ -68,10 +66,8 @@ void	close_semaphore(t_philo *philo)
 	sem_close(philo->print);
 	sem_close(philo->eat);
 	sem_close(philo->time_stamp);
-	sem_close(philo->end);
 	sem_unlink("fork");
 	sem_unlink("print");
 	sem_unlink("eat");
 	sem_unlink("time_stamp");
-	sem_unlink("end");
 }

@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 21:22:18 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/27 21:20:44 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/27 21:36:45 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	dead(t_philo *philo)
 	sem_wait(philo->print);
 	printf(HRED"%lums ", (get_current_time() - philo->time));
 	printf("%lu died\n"RST, philo->id);
-	//sem_post(philo->print);
 }
 
 size_t	unhappy_philo(t_philo *philo)
@@ -40,7 +39,6 @@ size_t	unhappy_philo(t_philo *philo)
 	sem_wait(philo->time_stamp);
 	if ((get_current_time() - philo->last_meal_time) >= philo->life_time)
 	{
-		is_end(philo);
 		dead(philo);
 		return (1);
 	}
