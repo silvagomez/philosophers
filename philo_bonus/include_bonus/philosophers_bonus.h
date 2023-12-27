@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 22:34:38 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/26 12:17:59 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/27 21:20:04 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ typedef struct s_philo
 	size_t		last_meal_time;
 	size_t		id_lhand;
 	size_t		id_rhand;
+	size_t		ending_flag;
 	int			*pid;
 	sem_t		*fork;
 	sem_t		*print;
 	sem_t		*eat;
-	sem_t		*end;			
 	sem_t		*time_stamp;
+	sem_t		*end;			
 	pthread_t	waiter;
 }				t_philo;
 
@@ -76,7 +77,7 @@ int		alloc_pid(t_philo *philo);
 // utils_2_bonus
 size_t	get_current_time(void);
 void	ft_usleep(size_t time);
-size_t	is_end(t_philo *philo);
+void	is_end(t_philo *philo);
 
 // philosopher_routine_bonus
 void	eating(t_philo *philo);

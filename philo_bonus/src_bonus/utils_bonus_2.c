@@ -6,7 +6,7 @@
 /*   By: dsilva-g <dsilva-g@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 21:13:24 by dsilva-g          #+#    #+#             */
-/*   Updated: 2023/12/25 21:46:44 by dsilva-g         ###   ########.fr       */
+/*   Updated: 2023/12/27 21:20:33 by dsilva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,11 @@ void	ft_usleep(size_t time)
 	time_stamp = get_current_time();
 	while ((get_current_time() - time_stamp) < time)
 		usleep(500);
+}
+
+void	is_end(t_philo *philo)
+{
+	sem_wait(philo->end);
+	philo->ending_flag = 1;
+	sem_post(philo->end);
 }
